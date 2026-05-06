@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,9 +28,14 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 # Application definition
 
 INSTALLED_APPS = [
+    "product.apps.ProductConfig",
     "home.apps.HomeConfig",
     'django.contrib.admin',
     'django.contrib.auth',
@@ -75,8 +80,12 @@ WSGI_APPLICATION = 'Eticaret.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'DjangoEticaret',         # The name of the database you created
+        'USER': 'postgres',         # Your PostgreSQL username
+        'PASSWORD': '1',    # Your PostgreSQL password
+        'HOST': 'localhost',            # Set to 'localhost' or your DB server IP
+        'PORT': '5432',                 # Default PostgreSQL port is 5432
     }
 }
 
