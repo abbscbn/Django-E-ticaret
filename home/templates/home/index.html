@@ -1,0 +1,58 @@
+{% extends "home/base.html" %}
+
+{% block title %}Ana Sayfa{% endblock %}
+
+{% block content %}
+
+    {% include "home/slider.html" %}
+
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            {% include "home/sidebar.html" %}
+        </div>
+
+        <!-- Content -->
+        <div class="col-md-9">
+            <div class="row">
+
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://picsum.photos/300/200?1" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Ürün 1</h5>
+                            <p class="card-text">Kısa açıklama</p>
+                            <a href="#" class="btn btn-primary">İncele</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://picsum.photos/300/200?2" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Ürün 2</h5>
+                            <p class="card-text">Kısa açıklama</p>
+                            <a href="#" class="btn btn-primary">İncele</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://picsum.photos/300/200?3" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Ürün 3</h5>
+                            <p class="card-text">Kısa açıklama</p>
+                            <a href="#" class="btn btn-primary">İncele</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
