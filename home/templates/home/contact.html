@@ -1,0 +1,89 @@
+{% extends "home/base.html" %}
+
+{% block title %}{{ setting.title }}{% endblock %}
+
+{% block icon %}
+<link rel="icon" type="image/x-icon" href="{{ setting.icon.url }}">
+{% endblock %}
+
+{% block desc %}{{ setting.description }}{% endblock %}
+{% block kw %}{{ setting.keywords }}{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row g-4">
+
+        <!-- İletişim Formu -->
+        <div class="col-lg-5">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body p-4">
+
+                    <h3 class="mb-4 fw-bold">
+                        İletişim Formu
+                    </h3>
+
+                    <!-- Messages -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="alert">
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Form -->
+                    <form method="post">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            {{ form.as_p }}
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-dark w-100 rounded-3">
+                            Formu Gönder
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- İletişim Bilgileri -->
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+                <div class="card-body p-4">
+
+                    <h3 class="mb-4 fw-bold">
+                        İletişim Bilgileri
+                    </h3>
+
+                    <div class="text-muted lh-lg">
+                        {{ setting.contact|safe }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

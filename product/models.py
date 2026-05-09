@@ -1,3 +1,4 @@
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.db.models import Model
 from django.utils.safestring import mark_safe
@@ -47,7 +48,7 @@ class Product(models.Model):
     amount=models.IntegerField(default=0)
     minamount=models.IntegerField(default=3)
     variant=models.CharField(max_length=10,choices=VARIANTS, default='None')
-    detail=models.TextField(max_length=255)
+    detail=RichTextUploadingField()
     slug = models.SlugField(null=False, unique=True)
     status=models.CharField(max_length=10,choices=STATUS)
     create_at=models.DateTimeField(auto_now_add=True)

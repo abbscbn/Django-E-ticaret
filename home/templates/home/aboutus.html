@@ -1,0 +1,12 @@
+{% extends "home/base.html" %}
+
+{% block title %}{{ setting.title }}{% endblock %}
+{% block icon %}
+    <link rel="icon" type="image/x-icon" href="{{ setting.icon.url }}">
+{% endblock %}
+{% block desc %}{{ setting.description }}{% endblock %}
+{% block kw %}{{ setting.keywords }}{% endblock %}
+
+{% block content %}
+     {{ setting.aboutus | safe }}
+{% endblock %}
