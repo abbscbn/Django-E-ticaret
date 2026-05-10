@@ -1,0 +1,241 @@
+{% extends "home/base.html" %}
+
+{% block title %}{{ product.title }}{% endblock %}
+
+{% block icon %}
+    <link rel="icon" type="image/x-icon" href="{{ setting.icon.url }}">
+{% endblock %}
+
+{% block desc %}
+    {{ product.description }}
+{% endblock %}
+
+{% block kw %}
+    {{ product.keywords }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="container my-5">
+
+        <div class="row g-5">
+
+            <!-- PRODUCT IMAGE -->
+            <div class="col-lg-6">
+
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+                    <img src="{{ product.image.url }}"
+                         class="img-fluid"
+                         alt="{{ product.title }}"
+                         style="height: 550px; object-fit: cover;">
+
+                </div>
+
+            </div>
+
+            <!-- PRODUCT INFO -->
+            <div class="col-lg-6">
+
+                <!-- Category -->
+                <div class="mb-3">
+
+                    <a href="{% url 'category_detail' product.category.slug %}"
+                       class="text-decoration-none text-primary fw-semibold">
+
+                        <i class="bi bi-folder2-open me-1"></i>
+
+                        {{ product.category.title }}
+
+                    </a>
+
+                </div>
+
+                <!-- Title -->
+                <h1 class="fw-bold mb-3">
+
+                    {{ product.title }}
+
+                </h1>
+
+                <!-- Description -->
+                <p class="text-muted fs-5">
+
+                    {{ product.description }}
+
+                </p>
+
+                <!-- Price -->
+                <div class="my-4">
+
+                <span class="display-6 fw-bold text-dark">
+
+                    {{ product.price }} ₺
+
+                </span>
+
+                </div>
+
+                <!-- Stock -->
+                <div class="mb-4">
+
+                    {% if product.amount > 0 %}
+
+                        <span class="badge bg-success px-3 py-2 fs-6">
+
+                        Stokta Var
+
+                    </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger px-3 py-2 fs-6">
+
+                        Tükendi
+
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+                <!-- Variant -->
+                {% if product.variant != "None" %}
+
+                    <div class="mb-4">
+
+                        <h5 class="fw-semibold mb-3">
+
+                            Varyant
+
+                        </h5>
+
+                        <span class="badge bg-secondary fs-6 px-3 py-2">
+
+                        {{ product.variant }}
+
+                    </span>
+
+                    </div>
+
+                {% endif %}
+
+                <!-- Quantity -->
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+
+                        Adet
+
+                    </label>
+
+                    <input type="number"
+                           class="form-control w-25"
+                           value="{{ product.minamount }}"
+                           min="{{ product.minamount }}"
+                           max="{{ product.amount }}">
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex gap-3">
+
+                    <button class="btn btn-dark btn-lg rounded-3 px-5">
+
+                        <i class="bi bi-cart-plus me-2"></i>
+
+                        Sepete Ekle
+
+                    </button>
+
+                    <button class="btn btn-outline-dark btn-lg rounded-3">
+
+                        <i class="bi bi-heart"></i>
+
+                    </button>
+
+                </div>
+
+                <!-- Product Info -->
+                <div class="mt-5">
+
+                    <div class="card border-0 bg-light rounded-4">
+
+                        <div class="card-body">
+
+                            <div class="row text-center">
+
+                                <div class="col-4">
+
+                                    <i class="bi bi-truck fs-3 text-primary"></i>
+
+                                    <p class="mt-2 mb-0 small">
+                                        Hızlı Teslimat
+                                    </p>
+
+                                </div>
+
+                                <div class="col-4">
+
+                                    <i class="bi bi-shield-check fs-3 text-success"></i>
+
+                                    <p class="mt-2 mb-0 small">
+                                        Güvenli Ödeme
+                                    </p>
+
+                                </div>
+
+                                <div class="col-4">
+
+                                    <i class="bi bi-arrow-repeat fs-3 text-warning"></i>
+
+                                    <p class="mt-2 mb-0 small">
+                                        Kolay İade
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- PRODUCT DETAIL -->
+        <div class="row mt-5">
+
+            <div class="col-12">
+
+                <div class="card border-0 shadow-sm rounded-4">
+
+                    <div class="card-header bg-white border-0 py-4">
+
+                        <h3 class="fw-bold mb-0">
+
+                            Ürün Detayı
+
+                        </h3>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        {{ product.detail|safe }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}

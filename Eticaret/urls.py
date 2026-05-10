@@ -23,12 +23,17 @@ import home
 from home import views
 
 urlpatterns = [
-    path('', include("home.urls")),
-    path('home/', include("home.urls")),
-    path('product/', include("product.urls")),
-    path('admin/', admin.site.urls),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('hakkimizda/', views.aboutus, name='aboutus'),
-    path('iletisim/', views.contactus, name='contact'),
+                  path('', include("home.urls")),
+                  path('home/', include("home.urls")),
+                  path('product/', include("product.urls")),
+                  path('admin/', admin.site.urls),
+                  path('ckeditor/', include('ckeditor_uploader.urls')),
+                  path('hakkimizda/', views.aboutus, name='aboutus'),
+                  path('iletisim/', views.contactus, name='contact'),
+                  path(
+                      'category/<slug:slug>/',
+                      views.category_detail,
+                      name='category_detail'
+                  ),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

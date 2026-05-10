@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from home.models import Setting, ContactForm, ContactMessage
 from product.models import Product, Category
@@ -9,37 +9,74 @@ from product.models import Product, Category
 # Create your views here.
 def index(request):
     setting = Setting.objects.get(pk=1)
-    products=Product.objects.all()
-    categorys=Category.objects.all()
-    context = {'setting':setting
-               ,'page':'home'
-               ,'products':products
-               ,'categorys':categorys}
-    return render(request,'home/index.html',context)
+    products = Product.objects.all()
+    categorys = Category.objects.all()
+    context = {'setting': setting
+        , 'page': 'home'
+        , 'products': products
+        , 'categorys': categorys}
+    return render(request, 'home/index.html', context)
+
 
 def aboutus(request):
     setting = Setting.objects.get(pk=1)
-    context = {'setting':setting,'page':'aboutus'} #burada hangi sayafaya ilettiğimizi belli etmek amaçlı page parametreside gönderebiliriz
-    return render(request,'home/aboutus.html',context)
+    context = {'setting': setting,
+               'page': 'aboutus'}  # burada hangi sayafaya ilettiğimizi belli etmek amaçlı page parametreside gönderebiliriz
+    return render(request, 'home/aboutus.html', context)
 
 
 def contactus(request):
-    if request.method == 'POST': # check post
+    if request.method == 'POST':  # check post
         form = ContactForm(request.POST)
         if form.is_valid():
-            data = ContactMessage() #create relation with model
-            data.name = form.cleaned_data['name'] # get form input data
+            data = ContactMessage()  # create relation with model
+            data.name = form.cleaned_data['name']  # get form input data
             data.email = form.cleaned_data['email']
             data.subject = form.cleaned_data['subject']
             data.message = form.cleaned_data['message']
             data.ip = request.META.get('REMOTE_ADDR')
-            data.save()  #save data to table
-            messages.success(request,"Mesjaınız iletildi.Teşekkür ederiz.")
+            data.save()  # save data to table
+            messages.success(request, "Mesjaınız iletildi.Teşekkür ederiz.")
             return HttpResponseRedirect('/iletisim')
-
 
     setting = Setting.objects.get(pk=1)
 
     form = ContactForm
-    context={'setting':setting,'form':form  }
+    context = {'setting': setting, 'form': form}
     return render(request, 'home/contact.html', context)
+
+
+def category_detail(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+
+    # Alt kategoriler
+    children = category.get_children()
+
+    # Eğer child varsa
+    if children.exists():
+        context = {
+            'category': category,
+            'children': children,
+            'page': 'subcategory'
+        }
+
+        return render(
+            request,
+            'home/subcategories.html',
+            context
+        )
+
+    # Leaf category ise ürün getir
+    products = Product.objects.filter(category=category)
+
+    context = {
+        'category': category,
+        'products': products,
+        'page': 'products'
+    }
+
+    return render(
+        request,
+        'home/category_products.html',
+        context
+    )
