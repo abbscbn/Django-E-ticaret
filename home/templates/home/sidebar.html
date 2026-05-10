@@ -1,11 +1,56 @@
-<div class="card">
-    <div class="card-header bg-primary text-white">
-        Kategoriler
+{% load mptt_tags %}
+
+<div class="card shadow-sm border-0 rounded-4">
+
+    <!-- Header -->
+    <div class="card-header bg-dark text-white py-3 rounded-top-4">
+        <h5 class="mb-0 fw-bold">
+            <i class="bi bi-grid-fill me-2"></i>
+            Kategoriler
+        </h5>
     </div>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">Elektronik</li>
-        <li class="list-group-item">Giyim</li>
-        <li class="list-group-item">Kitap</li>
-        <li class="list-group-item">Ev & Yaşam</li>
-    </ul>
+
+    <div class="category-sidebar">
+
+        {% recursetree categorys %}
+
+            <div class="category-item">
+
+                <a href="#"
+                   class="category-link">
+
+                    <span>
+
+                        {% if node.is_leaf_node %}
+                            <i class="bi bi-tag me-2 text-secondary"></i>
+                        {% else %}
+                            <i class="bi bi-folder2-open me-2 text-primary"></i>
+                        {% endif %}
+
+                        {{ node.title }}
+
+                    </span>
+
+                    {% if not node.is_leaf_node %}
+                        <i class="bi bi-chevron-right small"></i>
+                    {% endif %}
+
+                </a>
+
+                {% if not node.is_leaf_node %}
+
+                    <div class="subcategory">
+
+                        {{ children }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        {% endrecursetree %}
+
+    </div>
+
 </div>
