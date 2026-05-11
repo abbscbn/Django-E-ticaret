@@ -167,7 +167,7 @@ $(document).ready(function () {
 
                     if (response.errors) {
                         $.each(response.errors, function (key, value) {
-                            html += `<div>${key}: ${value[0]}</div>`;
+                            html += `<div>${value[0]}</div>`;
                         });
                     } else {
                         html += response.message;

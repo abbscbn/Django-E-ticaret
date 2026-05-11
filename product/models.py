@@ -108,9 +108,11 @@ class Comment(models.Model):
 
 class CommentForm(ModelForm):
     subject = forms.CharField(
+        min_length=3,
         max_length=50,
         required=True,
         error_messages={
+            'min_length':'Başlık minumum 3 karakterli olabilir',
             'required': 'Başlık alanı boş bırakılamaz.',
             'max_length': 'Başlık en fazla 50 karakter olabilir.',
         }

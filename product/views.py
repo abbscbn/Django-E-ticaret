@@ -14,12 +14,10 @@ def product_detail(request, slug):
         status='True'
     )
 
-    form = CommentForm()
 
     context = {"product": product,
                "images": images,
-               "comments": comments,
-               "form": form}
+               "comments": comments,}
     return render(request, "product/product_detail.html", context)
 
 
