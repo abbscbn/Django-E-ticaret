@@ -1,6 +1,9 @@
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Model
+from django import forms
+from django.forms import ModelForm
 from django.utils.safestring import mark_safe
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
@@ -9,22 +12,20 @@ from mptt.models import MPTTModel
 # Create your models here.
 
 
-
 class Category(MPTTModel):
     STATUS = (
         ('True', 'True'),
         ('False', 'False'),
     )
-    parent = TreeForeignKey('self',blank=True, null=True ,related_name='children', on_delete=models.CASCADE)
+    parent = TreeForeignKey('self', blank=True, null=True, related_name='children', on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     keywords = models.CharField(max_length=255)
     description = models.TextField(max_length=255)
-    image=models.ImageField(blank=True,upload_to='images/')
-    status=models.CharField(max_length=10, choices=STATUS)
+    image = models.ImageField(blank=True, upload_to='images/')
+    status = models.CharField(max_length=10, choices=STATUS)
     slug = models.SlugField(null=False, unique=True)
-    create_at=models.DateTimeField(auto_now_add=True)
-    update_at=models.DateTimeField(auto_now=True)
-
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
 
     class MPTTMeta:
         order_insertion_by = ['title']
@@ -36,6 +37,7 @@ class Category(MPTTModel):
             full_path.append(k.title)
             k = k.parent
         return ' / '.join(full_path[::-1])
+
 
 class Product(models.Model):
     STATUS = (
@@ -50,20 +52,20 @@ class Product(models.Model):
         ('Size-Color', 'Size-Color'),
 
     )
-    category = models.ForeignKey(Category, on_delete=models.CASCADE) #many to one relation with Category
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)  # many to one relation with Category
     title = models.CharField(max_length=150)
     keywords = models.CharField(max_length=255)
     description = models.TextField(max_length=255)
-    image=models.ImageField(upload_to='images/',null=False)
-    price = models.DecimalField(max_digits=12, decimal_places=2,default=0)
-    amount=models.IntegerField(default=0)
-    minamount=models.IntegerField(default=3)
-    variant=models.CharField(max_length=10,choices=VARIANTS, default='None')
-    detail=RichTextUploadingField()
+    image = models.ImageField(upload_to='images/', null=False)
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    amount = models.IntegerField(default=0)
+    minamount = models.IntegerField(default=3)
+    variant = models.CharField(max_length=10, choices=VARIANTS, default='None')
+    detail = RichTextUploadingField()
     slug = models.SlugField(null=False, unique=True)
-    status=models.CharField(max_length=10,choices=STATUS)
-    create_at=models.DateTimeField(auto_now_add=True)
-    update_at=models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=10, choices=STATUS)
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
@@ -76,9 +78,53 @@ class Product(models.Model):
 
 
 class Images(models.Model):
-    product=models.ForeignKey(Product,on_delete=models.CASCADE)
-    title = models.CharField(max_length=50,blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    title = models.CharField(max_length=50, blank=True)
     image = models.ImageField(blank=True, upload_to='images/')
 
     def __str__(self):
         return self.title
+
+
+class Comment(models.Model):
+    STATUS = (
+        ('New', 'New'),
+        ('True', 'True'),
+        ('False', 'False'),
+    )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=50, blank=True)
+    comment = models.CharField(max_length=250, blank=True)
+    rate = models.IntegerField(default=1)
+    ip = models.CharField(max_length=20, blank=True)
+    status = models.CharField(max_length=10, choices=STATUS, default='New')
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.subject
+
+
+class CommentForm(ModelForm):
+    subject = forms.CharField(
+        max_length=50,
+        required=True,
+        error_messages={
+            'required': 'Başlık alanı boş bırakılamaz.',
+            'max_length': 'Başlık en fazla 50 karakter olabilir.',
+        }
+    )
+
+    comment = forms.CharField(
+        max_length=250,
+        required=True,
+        error_messages={
+            'required': 'Yorum alanı boş bırakılamaz.',
+            'max_length': 'Yorum en fazla 250 karakter olabilir.',
+        }
+    )
+
+    class Meta:
+        model = Comment
+        fields = ['subject', 'comment', 'rate']

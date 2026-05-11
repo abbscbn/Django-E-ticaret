@@ -4,7 +4,13 @@ from product import views
 
 urlpatterns = [
     path(
-        '<slug:slug>',
+        'addcomment/<int:id>/',
+        views.addcomment,
+        name='addcomment'
+    ),
+
+    path(
+        '<slug:slug>/',
         views.product_detail,
         name='product_detail'
     ),

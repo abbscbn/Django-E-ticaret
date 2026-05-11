@@ -1,0 +1,151 @@
+<!-- CATEGORY -->
+<div class="mb-3">
+
+    <a href="{% url 'category_detail' product.category.slug %}"
+       class="text-decoration-none text-primary fw-semibold">
+
+        <i class="bi bi-folder2-open me-1"></i>
+
+        {{ product.category.title }}
+
+    </a>
+
+</div>
+
+<!-- TITLE -->
+<h1 class="fw-bold mb-3 display-6">
+
+    {{ product.title }}
+
+</h1>
+
+<!-- DESCRIPTION -->
+<p class="text-muted fs-5">
+
+    {{ product.description }}
+
+</p>
+
+<!-- PRICE -->
+<div class="my-4">
+
+    <span class="display-5 fw-bold text-dark">
+
+        {{ product.price }} ₺
+
+    </span>
+
+</div>
+
+<!-- STOCK -->
+<div class="mb-4">
+
+    {% if product.amount > 0 %}
+
+        <span class="badge bg-success px-3 py-2 fs-6">
+
+            <i class="bi bi-check-circle me-1"></i>
+
+            Stokta Var
+
+        </span>
+
+    {% else %}
+
+        <span class="badge bg-danger px-3 py-2 fs-6">
+
+            <i class="bi bi-x-circle me-1"></i>
+
+            Tükendi
+
+        </span>
+
+    {% endif %}
+
+</div>
+
+<!-- QUANTITY -->
+<div class="mb-4">
+
+    <label class="form-label fw-semibold">
+
+        Adet
+
+    </label>
+
+    <input type="number"
+           class="form-control rounded-3 w-25"
+           value="{{ product.minamount }}"
+           min="{{ product.minamount }}"
+           max="{{ product.amount }}">
+
+</div>
+
+<!-- BUTTONS -->
+<div class="d-flex gap-3 flex-wrap">
+
+    <button class="btn btn-dark btn-lg rounded-3 px-5">
+
+        <i class="bi bi-cart-plus me-2"></i>
+
+        Sepete Ekle
+
+    </button>
+
+    <button class="btn btn-outline-dark btn-lg rounded-3">
+
+        <i class="bi bi-heart"></i>
+
+    </button>
+
+</div>
+
+<!-- PRODUCT FEATURES -->
+<div class="mt-5">
+
+    <div class="card border-0 bg-light rounded-4">
+
+        <div class="card-body">
+
+            <div class="row text-center">
+
+                <!-- SHIPPING -->
+                <div class="col-4">
+
+                    <i class="bi bi-truck fs-3 text-primary"></i>
+
+                    <p class="mt-2 mb-0 small">
+                        Hızlı Teslimat
+                    </p>
+
+                </div>
+
+                <!-- SECURITY -->
+                <div class="col-4">
+
+                    <i class="bi bi-shield-check fs-3 text-success"></i>
+
+                    <p class="mt-2 mb-0 small">
+                        Güvenli Ödeme
+                    </p>
+
+                </div>
+
+                <!-- RETURN -->
+                <div class="col-4">
+
+                    <i class="bi bi-arrow-repeat fs-3 text-warning"></i>
+
+                    <p class="mt-2 mb-0 small">
+                        Kolay İade
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

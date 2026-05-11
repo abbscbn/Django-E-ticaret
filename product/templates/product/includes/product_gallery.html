@@ -1,0 +1,149 @@
+<div class="row">
+
+    <!-- THUMBNAILS -->
+    <div class="col-2">
+
+        <div class="d-flex flex-column gap-3">
+
+            <!-- MAIN IMAGE THUMB -->
+            <div class="gallery-thumb-wrapper active-thumb">
+
+                <img src="{{ product.image.url }}"
+                     class="gallery-thumb img-fluid"
+                     onclick="changeImage(this, 0)"
+                     alt="{{ product.title }}">
+
+            </div>
+
+            <!-- EXTRA IMAGES -->
+            {% for rs in images %}
+
+                <div class="gallery-thumb-wrapper">
+
+                    <img src="{{ rs.image.url }}"
+                         class="gallery-thumb img-fluid"
+                         onclick="changeImage(this, {{ forloop.counter }})"
+                         alt="{{ rs.title }}">
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- MAIN IMAGE -->
+    <div class="col-10">
+
+        <div class="product-main-image-container shadow-sm rounded-4 position-relative overflow-hidden">
+
+            <!-- ZOOM ICON -->
+            <div class="position-absolute top-0 end-0 m-3 z-2">
+
+                <button class="btn btn-light rounded-circle shadow-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#galleryModal">
+
+                    <i class="bi bi-arrows-fullscreen"></i>
+
+                </button>
+
+            </div>
+
+            <img id="mainImage"
+                 src="{{ product.image.url }}"
+                 class="img-fluid product-main-image"
+                 alt="{{ product.title }}"
+                 data-bs-toggle="modal"
+                 data-bs-target="#galleryModal">
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FULLSCREEN GALLERY MODAL -->
+<div class="modal fade"
+     id="galleryModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-fullscreen">
+
+        <div class="modal-content bg-black border-0">
+
+            <!-- CLOSE -->
+            <div class="position-absolute top-0 end-0 p-4 z-3">
+
+                <button type="button"
+                        class="btn btn-light rounded-circle"
+                        data-bs-dismiss="modal">
+
+                    <i class="bi bi-x-lg"></i>
+
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body d-flex align-items-center justify-content-center p-0 position-relative">
+
+                <!-- PREV -->
+                <button class="gallery-nav gallery-prev"
+                        onclick="prevImage()">
+
+                    <i class="bi bi-chevron-left"></i>
+
+                </button>
+
+                <!-- IMAGE -->
+                <div class="zoom-container">
+
+                    <img id="modalImage"
+                         src="{{ product.image.url }}"
+                         class="modal-gallery-image">
+
+                </div>
+
+                <!-- NEXT -->
+                <button class="gallery-nav gallery-next"
+                        onclick="nextImage()">
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </button>
+
+            </div>
+
+            <!-- ZOOM CONTROLS -->
+            <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4 d-flex gap-3 z-3">
+
+                <button class="btn btn-light rounded-circle"
+                        onclick="zoomIn()">
+
+                    <i class="bi bi-zoom-in"></i>
+
+                </button>
+
+                <button class="btn btn-light rounded-circle"
+                        onclick="zoomOut()">
+
+                    <i class="bi bi-zoom-out"></i>
+
+                </button>
+
+                <button class="btn btn-light rounded-circle"
+                        onclick="resetZoom()">
+
+                    <i class="bi bi-arrow-counterclockwise"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

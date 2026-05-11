@@ -1,0 +1,138 @@
+<div class="card border-0 shadow-sm rounded-4">
+
+    <!-- TAB HEADER -->
+    <div class="card-header bg-white border-0 pt-4">
+
+        <ul class="nav nav-tabs border-0" id="productTab" role="tablist">
+
+            <!-- DETAIL -->
+            <li class="nav-item">
+
+                <button class="nav-link active fw-semibold"
+                        id="detail-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#detail-tab-pane">
+
+                    <i class="bi bi-file-text me-2"></i>
+
+                    Ürün Detayı
+
+                </button>
+
+            </li>
+
+            <!-- COMMENTS -->
+            <li class="nav-item">
+
+                <button class="nav-link fw-semibold"
+                        id="comment-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#comment-tab-pane">
+
+                    <i class="bi bi-chat-dots me-2"></i>
+
+                    Yorumlar ({{ comments.count }})
+
+                </button>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div class="card-body">
+
+        <div class="tab-content">
+
+            <!-- DETAIL CONTENT -->
+            <div class="tab-pane fade show active"
+                 id="detail-tab-pane">
+
+                {{ product.detail|safe }}
+
+            </div>
+
+            <!-- COMMENT CONTENT -->
+            <div class="tab-pane fade"
+                 id="comment-tab-pane">
+
+                {% if comments %}
+
+                    {% for rs in comments %}
+
+                        <div class="border rounded-4 p-4 mb-4">
+
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <div>
+
+                                    <h5 class="fw-bold mb-1">
+
+                                        {{ rs.subject }}
+
+                                    </h5>
+
+                                    <small class="text-muted">
+
+                                        {{ rs.user.username }}
+
+                                        •
+
+                                        {{ rs.create_at }}
+
+                                    </small>
+
+                                </div>
+
+                                <!-- RATE -->
+                                <div>
+
+                                    {% for i in "12345" %}
+
+                                        {% if forloop.counter <= rs.rate %}
+
+                                            <i class="bi bi-star-fill text-warning"></i>
+
+                                        {% else %}
+
+                                            <i class="bi bi-star text-warning"></i>
+
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+
+                            <hr>
+
+                            <p class="mb-0 text-muted">
+
+                                {{ rs.comment }}
+
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="alert alert-light border rounded-4">
+
+                        Henüz yorum yapılmamış.
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

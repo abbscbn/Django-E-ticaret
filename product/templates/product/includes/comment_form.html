@@ -1,0 +1,79 @@
+<div class="card border-0 shadow-sm rounded-4">
+
+    <div class="card-header bg-dark text-white rounded-top-4 py-3">
+        <h5 class="mb-0">
+            <i class="bi bi-pencil-square me-2"></i>
+            Ürün Yorumu
+        </h5>
+    </div>
+
+    <div class="card-body">
+
+        <!-- AJAX MESSAGE -->
+        <div id="comment-message"></div>
+
+        {% if user.is_authenticated %}
+
+            <form id="commentForm"
+                  method="post"
+                  action="{% url 'addcomment' product.id %}">
+
+                {% csrf_token %}
+
+                <!-- SUBJECT -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Başlık</label>
+                    <input type="text"
+                           name="subject"
+                           class="form-control"
+                           required
+                           minlength="3"
+                           maxlength="50">
+                </div>
+
+                <!-- COMMENT -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Yorum</label>
+                    <textarea name="comment"
+                              rows="5"
+                              class="form-control"
+                              required
+                              minlength="10"
+                              maxlength="250"></textarea>
+                </div>
+
+                <!-- RATE -->
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">Puan</label>
+
+                    <div id="ratingStars" class="d-flex gap-1 fs-4">
+
+                        <i class="bi bi-star rating-star text-warning" data-value="1"></i>
+                        <i class="bi bi-star rating-star text-warning" data-value="2"></i>
+                        <i class="bi bi-star rating-star text-warning" data-value="3"></i>
+                        <i class="bi bi-star rating-star text-warning" data-value="4"></i>
+                        <i class="bi bi-star rating-star text-warning" data-value="5"></i>
+
+                    </div>
+
+                    <input type="hidden" name="rate" id="rateInput" value="0">
+
+                </div>
+
+                <button type="submit" class="btn btn-dark w-100">
+                    Yorumu Gönder
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <div class="alert alert-warning">
+                Yorum yapmak için giriş yapmalısınız
+            </div>
+
+        {% endif %}
+
+    </div>
+</div>
