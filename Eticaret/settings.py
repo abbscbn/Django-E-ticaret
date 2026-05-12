@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
@@ -27,16 +26,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 # Application definition
 
 INSTALLED_APPS = [
     "product.apps.ProductConfig",
     "home.apps.HomeConfig",
+    "users.apps.UsersConfig",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -77,21 +75,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Eticaret.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'DjangoEticaret',         # The name of the database you created
-        'USER': 'postgres',         # Your PostgreSQL username
-        'PASSWORD': '1',    # Your PostgreSQL password
-        'HOST': 'localhost',            # Set to 'localhost' or your DB server IP
-        'PORT': '5432',                 # Default PostgreSQL port is 5432
+        'NAME': 'DjangoEticaret',  # The name of the database you created
+        'USER': 'postgres',  # Your PostgreSQL username
+        'PASSWORD': '1',  # Your PostgreSQL password
+        'HOST': 'localhost',  # Set to 'localhost' or your DB server IP
+        'PORT': '5432',  # Default PostgreSQL port is 5432
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -111,7 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
@@ -123,7 +118,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
@@ -133,4 +127,5 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-CKEDITOR_UPLOAD_PATH = "uploads/" # Medya dosyalarının konumu
+CKEDITOR_UPLOAD_PATH = "uploads/"  # Medya dosyalarının konumu
+

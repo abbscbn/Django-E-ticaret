@@ -1,7 +1,10 @@
+import json
+
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 
+from home.forms import SearchForm
 from home.models import Setting, ContactForm, ContactMessage
 from product.models import Product, Category
 
@@ -80,3 +83,38 @@ def category_detail(request, slug):
         'home/category_products.html',
         context
     )
+
+
+
+def search(request):
+    if request.method == 'POST': # check post
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['query'] # get form input data
+            products = Product.objects.filter(title__icontains=query)
+            context = {'products': products }
+            return render(request, 'home/search_products.html', context)
+
+    return HttpResponseRedirect('/')
+
+
+def search_auto(request):
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+
+        q = request.GET.get('term', '')
+
+        products = Product.objects.filter(
+            title__icontains=q
+        )[:10]
+
+        results = []
+
+        for rs in products:
+            results.append(
+                f"{rs.title}"
+            )
+
+        return JsonResponse(results, safe=False)
+
+    return JsonResponse([], safe=False)

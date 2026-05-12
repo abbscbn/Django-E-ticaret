@@ -1,0 +1,67 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-5">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body p-5">
+
+                    <h2 class="fw-bold mb-4 text-center">
+                        Giriş Yap
+                    </h2>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-danger">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+
+                            <label>Kullanıcı Adı</label>
+
+                            <input type="text"
+                                   name="username"
+                                   class="form-control">
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label>Şifre</label>
+
+                            <input type="password"
+                                   name="password"
+                                   class="form-control">
+
+                        </div>
+
+                        <button class="btn btn-dark w-100 py-3">
+                            Giriş Yap
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

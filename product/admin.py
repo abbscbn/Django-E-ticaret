@@ -13,8 +13,9 @@ class ProductImageInline(admin.TabularInline):
 class CategoryAdmin(DraggableMPTTAdmin):
     mptt_indent_field = "title"
     list_display = ('tree_actions', 'indented_title',
-                    'related_products_count', 'related_products_cumulative_count')
+                    'related_products_count', 'related_products_cumulative_count','slug')
     list_display_links = ('indented_title',)
+    prepopulated_fields = {'slug': ('title',)}
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -47,10 +48,11 @@ class CategoryAdmin(DraggableMPTTAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['title', 'status', 'category', 'image_tag']
+    list_display = ['title', 'status', 'category', 'image_tag','slug']
     readonly_fields = ('image_tag',)
     list_filter = ['status', 'category']
     inlines = [ProductImageInline]
+    prepopulated_fields = {'slug': ('title',)}
 
 
 class ImagesAdmin(admin.ModelAdmin):

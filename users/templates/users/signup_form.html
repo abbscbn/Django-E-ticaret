@@ -1,0 +1,193 @@
+{% extends "home/base.html" %}
+
+{% block title %}
+    Kayıt Ol
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body p-5">
+
+                    <div class="text-center mb-5">
+
+                        <h2 class="fw-bold">
+                            Hesap Oluştur
+                        </h2>
+
+                        <p class="text-muted mb-0">
+                            Yeni bir hesap oluşturun
+                        </p>
+
+                    </div>
+
+                    <!-- GLOBAL ERRORS -->
+                    {% if form.non_field_errors %}
+
+                        <div class="alert alert-danger">
+
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                    <form method="post">
+
+                        {% csrf_token %}
+
+                        <!-- USERNAME -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                {{ form.username.label }}
+                            </label>
+
+                            {{ form.username }}
+
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-2">
+                                    {{ form.username.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                {{ form.email.label }}
+                            </label>
+
+                            {{ form.email }}
+
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-2">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- FIRST NAME -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                {{ form.first_name.label }}
+                            </label>
+
+                            {{ form.first_name }}
+
+                            {% if form.first_name.errors %}
+                                <div class="text-danger small mt-2">
+                                    {{ form.first_name.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- LAST NAME -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                {{ form.last_name.label }}
+                            </label>
+
+                            {{ form.last_name }}
+
+                            {% if form.last_name.errors %}
+                                <div class="text-danger small mt-2">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- PASSWORD -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                {{ form.password1.label }}
+                            </label>
+
+                            {{ form.password1 }}
+
+                            {% if form.password1.help_text %}
+                                <div class="form-text">
+                                    {{ form.password1.help_text|safe }}
+                                </div>
+                            {% endif %}
+
+                            {% if form.password1.errors %}
+                                <div class="text-danger small mt-2">
+                                    {{ form.password1.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- PASSWORD2 -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                {{ form.password2.label }}
+                            </label>
+
+                            {{ form.password2 }}
+
+                            {% if form.password2.errors %}
+                                <div class="text-danger small mt-2">
+                                    {{ form.password2.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- BUTTON -->
+                        <button type="submit"
+                                class="btn btn-dark w-100 py-3 rounded-3">
+
+                            Hesap Oluştur
+
+                        </button>
+
+                    </form>
+
+                    <div class="text-center mt-4">
+
+                        <small class="text-muted">
+
+                            Zaten hesabın var mı?
+
+                            <a href="{% url 'login' %}"
+                               class="text-dark fw-semibold text-decoration-none">
+
+                                Giriş Yap
+
+                            </a>
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

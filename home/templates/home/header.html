@@ -1,18 +1,197 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="/">E-Ticaret</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 shadow-sm">
 
-        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <div class="container">
+
+        <!-- LOGO -->
+        <a class="navbar-brand fw-bold fs-3"
+           href="/">
+
+            E-Ticaret
+
+        </a>
+
+        <!-- MOBILE -->
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+
             <span class="navbar-toggler-icon"></span>
+
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="/">Ana Sayfa</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Ürünler</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'aboutus' %}">Hakkımızda</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">İletişim</a></li>
+        <div class="collapse navbar-collapse"
+             id="navbarNav">
+
+            <!-- SEARCH -->
+            <form class="d-flex mx-lg-4 my-3 my-lg-0 flex-grow-1 position-relative"
+                  method="post"
+                  action="{% url 'search' %}">
+
+                {% csrf_token %}
+
+                <div class="input-group">
+
+                    <input type="text"
+                           name="query"
+                           id="query"
+                           class="form-control border-0 shadow-none"
+                           placeholder="Ürün ara..."
+                           autocomplete="off">
+
+                    <button class="btn btn-light px-4"
+                            type="submit">
+
+                        <i class="bi bi-search"></i>
+
+                    </button>
+
+                </div>
+
+                <!-- AUTOCOMPLETE -->
+                <div id="searchResults"
+                     class="list-group position-absolute w-100 mt-5 z-3 shadow">
+                </div>
+
+            </form>
+
+            <!-- MENU -->
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        Ana Sayfa
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Ürünler
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'aboutus' %}">
+                        Hakkımızda
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}">
+                        İletişim
+                    </a>
+                </li>
+
+                {% if user.is_authenticated %}
+
+                    <!-- USER DROPDOWN -->
+                    <li class="nav-item dropdown">
+
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                           href="#"
+                           role="button"
+                           data-bs-toggle="dropdown">
+
+                            {% if request.session.userimage %}
+
+                                <img src="{{ request.session.userimage }}"
+                                     class="rounded-circle border border-2 border-light"
+                                     width="38"
+                                     height="38"
+                                     style="object-fit: cover;">
+
+                            {% else %}
+
+                                <img src="/media/images/users/user.png"
+                                     class="rounded-circle border border-2 border-light"
+                                     width="38"
+                                     height="38"
+                                     style="object-fit: cover;">
+
+                            {% endif %}
+
+                            <span class="fw-semibold">
+            {{ user.username }}
+        </span>
+
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4">
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'user_index' %}">
+
+                                    <i class="bi bi-person me-2"></i>
+                                    Profilim
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'user_update' %}">
+
+                                    <i class="bi bi-pencil-square me-2"></i>
+                                    Profil Güncelle
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item py-2"
+                                   href="{% url 'user_password' %}">
+
+                                    <i class="bi bi-key me-2"></i>
+                                    Şifre Değiştir
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item text-danger py-2"
+                                   href="{% url 'logout' %}">
+
+                                    <i class="bi bi-box-arrow-right me-2"></i>
+                                    Çıkış Yap
+
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                {% else %}
+
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light rounded-pill px-4"
+                           href="{% url 'login' %}">
+
+                            Giriş Yap
+
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="btn btn-light rounded-pill px-4"
+                           href="{% url 'signup' %}">
+
+                            Kayıt Ol
+
+                        </a>
+                    </li>
+
+                {% endif %}
+
             </ul>
+
         </div>
+
     </div>
+
 </nav>
