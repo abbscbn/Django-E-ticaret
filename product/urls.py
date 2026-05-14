@@ -14,4 +14,5 @@ urlpatterns = [
         views.product_detail,
         name='product_detail'
     ),
+
 ]

@@ -1,14 +1,22 @@
 from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 
-from product.models import Category, Product, Images, Comment
+
+
+from product.models import Category, Product, Images, Comment, Color, Size, Variants
 
 
 # Register your models here.
+
 class ProductImageInline(admin.TabularInline):
     model = Images
     extra = 5
 
+class ProductVariantsInline(admin.TabularInline):
+    model = Variants
+    readonly_fields = ('image_tag',)
+    extra = 1
+    show_change_link = True
 
 class CategoryAdmin(DraggableMPTTAdmin):
     mptt_indent_field = "title"
@@ -51,7 +59,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ['title', 'status', 'category', 'image_tag','slug']
     readonly_fields = ('image_tag',)
     list_filter = ['status', 'category']
-    inlines = [ProductImageInline]
+    inlines = [ProductImageInline,ProductVariantsInline]
     prepopulated_fields = {'slug': ('title',)}
 
 
@@ -64,8 +72,21 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['status']
     readonly_fields = ('subject', 'comment', 'ip', 'user', 'product', 'rate', 'id')
 
+class ColorAdmin(admin.ModelAdmin):
+    list_display = ['name', 'code', 'color_tag']
+
+class SizeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'code']
+
+class VariantsAdmin(admin.ModelAdmin):
+    list_display = ['title','product','color','size','price','quantity','image_tag']
+
+
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Images, ImagesAdmin)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(Color, ColorAdmin)
+admin.site.register(Size, SizeAdmin)
+admin.site.register(Variants,VariantsAdmin)

@@ -32,6 +32,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Application definition
 
 INSTALLED_APPS = [
+    "order.apps.OrderConfig",
     "product.apps.ProductConfig",
     "home.apps.HomeConfig",
     "users.apps.UsersConfig",
@@ -128,4 +129,3 @@ STATICFILES_DIRS = [
 ]
 
 CKEDITOR_UPLOAD_PATH = "uploads/"  # Medya dosyalarının konumu
-

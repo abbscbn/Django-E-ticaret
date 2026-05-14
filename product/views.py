@@ -62,3 +62,5 @@ def addcomment(request, id):
         "status": "error",
         "message": "Geçersiz istek"
     })
+
+
