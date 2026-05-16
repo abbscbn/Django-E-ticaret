@@ -2,23 +2,39 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 
-from product.models import Product, Images, CommentForm, Comment
+from product.models import Product, Images, CommentForm, Comment, Variants
 
 
 def product_detail(request, slug):
 
     product = get_object_or_404(Product, slug=slug)
+
     images = Images.objects.filter(product_id=product.id)
+
     comments = Comment.objects.filter(
         product_id=product.id,
         status='True'
     )
 
+    variants = Variants.objects.filter(
+        product_id=product.id
+    )
 
-    context = {"product": product,
-               "images": images,
-               "comments": comments,}
-    return render(request, "product/product_detail.html", context)
+    form = CommentForm()
+
+    context = {
+        "product": product,
+        "images": images,
+        "comments": comments,
+        "form": form,
+        "variants": variants,
+    }
+
+    return render(
+        request,
+        "product/product_detail.html",
+        context
+    )
 
 
 def addcomment(request, id):

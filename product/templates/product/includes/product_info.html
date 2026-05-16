@@ -1,151 +1,84 @@
-<!-- CATEGORY -->
-<div class="mb-3">
+<div class="ps-lg-4">
 
-    <a href="{% url 'category_detail' product.category.slug %}"
-       class="text-decoration-none text-primary fw-semibold">
+    <h1 class="fw-bold mb-3">
+        {{ product.title }}
+    </h1>
 
-        <i class="bi bi-folder2-open me-1"></i>
+    <div class="mb-3">
 
-        {{ product.category.title }}
-
-    </a>
-
-</div>
-
-<!-- TITLE -->
-<h1 class="fw-bold mb-3 display-6">
-
-    {{ product.title }}
-
-</h1>
-
-<!-- DESCRIPTION -->
-<p class="text-muted fs-5">
-
-    {{ product.description }}
-
-</p>
-
-<!-- PRICE -->
-<div class="my-4">
-
-    <span class="display-5 fw-bold text-dark">
-
-        {{ product.price }} ₺
-
-    </span>
-
-</div>
-
-<!-- STOCK -->
-<div class="mb-4">
-
-    {% if product.amount > 0 %}
-
-        <span class="badge bg-success px-3 py-2 fs-6">
-
-            <i class="bi bi-check-circle me-1"></i>
-
-            Stokta Var
-
+        <span class="badge bg-success px-3 py-2">
+            Stok: {{ product.amount }}
         </span>
 
-    {% else %}
+    </div>
 
-        <span class="badge bg-danger px-3 py-2 fs-6">
+    <h2 class="fw-bold text-dark mb-4">
+        ₺{{ product.price }}
+    </h2>
 
-            <i class="bi bi-x-circle me-1"></i>
+    <div class="text-muted mb-4">
+        {{ product.description }}
+    </div>
 
-            Tükendi
+    <!-- ADD TO CART -->
+    <form method="post"
+          action="{% url 'addtoshopcart' product.id %}">
 
-        </span>
+        {% csrf_token %}
 
-    {% endif %}
+        <!-- VARIANT -->
+        {% if product.variant != 'None' %}
 
-</div>
+            <div class="mb-4">
 
-<!-- QUANTITY -->
-<div class="mb-4">
+                <label class="form-label fw-semibold">
+                    Varyant Seç
+                </label>
 
-    <label class="form-label fw-semibold">
+                <select name="variantid"
+                        class="form-select"
+                        required>
 
-        Adet
+                    {% for rs in variants %}
 
-    </label>
+                        <option value="{{ rs.id }}">
 
-    <input type="number"
-           class="form-control rounded-3 w-25"
-           value="{{ product.minamount }}"
-           min="{{ product.minamount }}"
-           max="{{ product.amount }}">
+                            {{ rs.title }}
+                            - ₺{{ rs.price }}
 
-</div>
+                        </option>
 
-<!-- BUTTONS -->
-<div class="d-flex gap-3 flex-wrap">
+                    {% endfor %}
 
-    <button class="btn btn-dark btn-lg rounded-3 px-5">
-
-        <i class="bi bi-cart-plus me-2"></i>
-
-        Sepete Ekle
-
-    </button>
-
-    <button class="btn btn-outline-dark btn-lg rounded-3">
-
-        <i class="bi bi-heart"></i>
-
-    </button>
-
-</div>
-
-<!-- PRODUCT FEATURES -->
-<div class="mt-5">
-
-    <div class="card border-0 bg-light rounded-4">
-
-        <div class="card-body">
-
-            <div class="row text-center">
-
-                <!-- SHIPPING -->
-                <div class="col-4">
-
-                    <i class="bi bi-truck fs-3 text-primary"></i>
-
-                    <p class="mt-2 mb-0 small">
-                        Hızlı Teslimat
-                    </p>
-
-                </div>
-
-                <!-- SECURITY -->
-                <div class="col-4">
-
-                    <i class="bi bi-shield-check fs-3 text-success"></i>
-
-                    <p class="mt-2 mb-0 small">
-                        Güvenli Ödeme
-                    </p>
-
-                </div>
-
-                <!-- RETURN -->
-                <div class="col-4">
-
-                    <i class="bi bi-arrow-repeat fs-3 text-warning"></i>
-
-                    <p class="mt-2 mb-0 small">
-                        Kolay İade
-                    </p>
-
-                </div>
+                </select>
 
             </div>
 
+        {% endif %}
+
+        <!-- QUANTITY -->
+        <div class="mb-4">
+
+            <label class="form-label fw-semibold">
+                Adet
+            </label>
+
+            <input type="number"
+                   name="quantity"
+                   value="1"
+                   min="1"
+                   class="form-control w-25">
+
         </div>
 
-    </div>
+        <button type="submit"
+                class="btn btn-dark btn-lg rounded-pill px-5">
+
+            <i class="bi bi-cart-plus me-2"></i>
+            Sepete Ekle
+
+        </button>
+
+    </form>
 
 </div>

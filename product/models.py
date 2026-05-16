@@ -159,28 +159,58 @@ class Size(models.Model):
         return self.name
 
 class Variants(models.Model):
-    title = models.CharField(max_length=100, blank=True,null=True)
+    title = models.CharField(max_length=100, blank=True, null=True)
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    color = models.ForeignKey(Color, on_delete=models.CASCADE,blank=True,null=True)
-    size = models.ForeignKey(Size, on_delete=models.CASCADE,blank=True,null=True)
-    image_id = models.IntegerField(blank=True,null=True,default=0)
+
+    color = models.ForeignKey(
+        Color,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+
+    size = models.ForeignKey(
+        Size,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+
+    image = models.ForeignKey(
+        Images,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
     quantity = models.IntegerField(default=1)
-    price = models.DecimalField(max_digits=12, decimal_places=2,default=0)
+
+    price = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
 
     def __str__(self):
         return self.title
 
-    def image(self):
-        img = Images.objects.get(id=self.image_id)
-        if img.id is not None:
-             varimage=img.image.url
-        else:
-            varimage=""
-        return varimage
+    def image_url(self):
+
+        if self.image and self.image.image:
+            return self.image.image.url
+
+        return ""
 
     def image_tag(self):
-        img = Images.objects.get(id=self.image_id)
-        if img.id is not None:
-             return mark_safe('<img src="{}" height="50"/>'.format(img.image.url))
-        else:
-            return ""
+
+        if self.image and self.image.image:
+            return mark_safe(
+                '<img src="{}" height="50"/>'.format(
+                    self.image.image.url
+                )
+            )
+
+        return ""
+
+    image_tag.short_description = 'Image'

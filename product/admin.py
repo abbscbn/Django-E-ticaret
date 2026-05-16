@@ -13,10 +13,22 @@ class ProductImageInline(admin.TabularInline):
     extra = 5
 
 class ProductVariantsInline(admin.TabularInline):
+
     model = Variants
+
     readonly_fields = ('image_tag',)
+
+    fields = (
+        'title',
+        'color',
+        'size',
+        'price',
+        'quantity',
+        'image',
+        'image_tag'
+    )
+
     extra = 1
-    show_change_link = True
 
 class CategoryAdmin(DraggableMPTTAdmin):
     mptt_indent_field = "title"
@@ -79,7 +91,29 @@ class SizeAdmin(admin.ModelAdmin):
     list_display = ['name', 'code']
 
 class VariantsAdmin(admin.ModelAdmin):
-    list_display = ['title','product','color','size','price','quantity','image_tag']
+
+    list_display = (
+        'title',
+        'product',
+        'color',
+        'size',
+        'price',
+        'quantity',
+        'image_tag'
+    )
+
+    readonly_fields = ('image_tag',)
+
+    list_filter = (
+        'product',
+        'color',
+        'size'
+    )
+
+    search_fields = (
+        'title',
+        'product__title'
+    )
 
 
 

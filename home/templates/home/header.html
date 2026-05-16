@@ -84,6 +84,29 @@
 
                 {% if user.is_authenticated %}
 
+                    <!-- CART -->
+                    <li class="nav-item me-2">
+
+                        <a href="{% url 'shopcart' %}"
+                           class="btn btn-light position-relative rounded-circle d-flex align-items-center justify-content-center"
+                           style="width:45px;height:45px;">
+
+                            <i class="bi bi-cart3 fs-5"></i>
+
+                            {% if request.user.shopcart_set.all.count > 0 %}
+
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+                {{ request.user.shopcart_set.all.count }}
+
+            </span>
+
+                            {% endif %}
+
+                        </a>
+
+                    </li>
+
                     <!-- USER DROPDOWN -->
                     <li class="nav-item dropdown">
 
