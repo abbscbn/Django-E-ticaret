@@ -1,0 +1,188 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row g-5">
+
+        <!-- ORDER FORM -->
+        <div class="col-lg-7">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body p-5">
+
+                    <h2 class="fw-bold mb-4">
+                        Teslimat Bilgileri
+                    </h2>
+
+                    <form method="post">
+
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    İsim
+                                </label>
+
+                                <input type="text"
+                                       name="first_name"
+                                       class="form-control rounded-3"
+                                       value="{{ profile.user.first_name }}"
+                                       required>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Soyisim
+                                </label>
+
+                                <input type="text"
+                                       name="last_name"
+                                       class="form-control rounded-3"
+                                       value="{{ profile.user.last_name }}"
+                                       required>
+
+                            </div>
+
+                            <div class="col-12">
+
+                                <label class="form-label">
+                                    Telefon
+                                </label>
+
+                                <input type="text"
+                                       name="phone"
+                                       class="form-control rounded-3"
+                                       value="{{ profile.phone }}"
+                                       required>
+
+                            </div>
+
+                            <div class="col-12">
+
+                                <label class="form-label">
+                                    Adres
+                                </label>
+
+                                <textarea name="address"
+                                          rows="4"
+                                          class="form-control rounded-3"
+                                          required>{{ profile.address }}</textarea>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Şehir
+                                </label>
+
+                                <input type="text"
+                                       name="city"
+                                       class="form-control rounded-3"
+                                       value="{{ profile.city }}"
+                                       required>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Ülke
+                                </label>
+
+                                <input type="text"
+                                       name="country"
+                                       class="form-control rounded-3"
+                                       value="{{ profile.country }}"
+                                       required>
+
+                            </div>
+
+                        </div>
+
+                        <button class="btn btn-dark w-100 mt-4 py-3 rounded-pill">
+
+                            Siparişi Onayla
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ORDER SUMMARY -->
+        <div class="col-lg-5">
+
+            <div class="card border-0 shadow rounded-4">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-4">
+                        Sipariş Özeti
+                    </h4>
+
+                    {% for rs in shopcart %}
+
+                        <div class="d-flex justify-content-between mb-3">
+
+                            <div>
+
+                                <div class="fw-semibold">
+                                    {{ rs.product.title }}
+                                </div>
+
+                                <small class="text-muted">
+                                    {{ rs.quantity }} adet
+                                </small>
+
+                            </div>
+
+                            <strong>
+
+                                {% if rs.variant %}
+                                    ₺{{ rs.varamount }}
+                                {% else %}
+                                    ₺{{ rs.amount }}
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    {% endfor %}
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between fs-5">
+
+                        <strong>Toplam</strong>
+
+                        <strong>
+                            ₺{{ total }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

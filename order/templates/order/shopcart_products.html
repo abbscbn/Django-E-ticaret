@@ -36,6 +36,7 @@
                         <th>Fiyat</th>
                         <th>Adet</th>
                         <th>Toplam</th>
+                        <th></th>
 
                     </tr>
 
@@ -66,9 +67,7 @@
                                         {% if rs.variant %}
 
                                             <small class="text-muted">
-
                                                 {{ rs.variant.title }}
-
                                             </small>
 
                                         {% endif %}
@@ -82,34 +81,35 @@
                             <td>
 
                                 {% if rs.variant %}
-
                                     ₺{{ rs.variant.price }}
-
                                 {% else %}
-
                                     ₺{{ rs.price }}
+                                {% endif %}
 
+                            </td>
+
+                            <td>
+                                {{ rs.quantity }}
+                            </td>
+
+                            <td class="fw-bold">
+
+                                {% if rs.variant %}
+                                    ₺{{ rs.varamount }}
+                                {% else %}
+                                    ₺{{ rs.amount }}
                                 {% endif %}
 
                             </td>
 
                             <td>
 
-                                {{ rs.quantity }}
+                                <a href="{% url 'deletefromcart' rs.id %}"
+                                   class="btn btn-sm btn-outline-danger rounded-pill">
 
-                            </td>
+                                    <i class="bi bi-trash"></i>
 
-                            <td class="fw-bold">
-
-                                {% if rs.variant %}
-
-                                    ₺{{ rs.varamount }}
-
-                                {% else %}
-
-                                    ₺{{ rs.amount }}
-
-                                {% endif %}
+                                </a>
 
                             </td>
 
@@ -160,11 +160,12 @@
 
                         </div>
 
-                        <button class="btn btn-dark w-100 mt-4 py-3 rounded-pill">
+                        <a href="{% url 'orderproduct' %}"
+                           class="btn btn-dark w-100 mt-4 py-3 rounded-pill">
 
                             Siparişi Tamamla
 
-                        </button>
+                        </a>
 
                     </div>
 

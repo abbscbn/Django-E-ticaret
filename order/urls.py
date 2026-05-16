@@ -11,4 +11,6 @@ urlpatterns = [
         views.shopcart,
         name='shopcart'
     ),
+    path('deletefromcart/<int:id>', views.deletefromcart, name='deletefromcart'),
+    path('orderproduct/', views.orderproduct, name='orderproduct'),
 ]
