@@ -53,6 +53,8 @@
         const commentUrl = "{% url 'addcomment' product.id %}";
     </script>
 
+    {{ variants_json|json_script:"variant-data" }}
+
     <script src="{% static 'js/product_detail.js' %}"></script>
 
 {% endblock %}

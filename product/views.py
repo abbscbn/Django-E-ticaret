@@ -1,12 +1,11 @@
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
-
-from product.models import Product, Images, CommentForm, Comment, Variants
+import json
+from product.models import Product, Images, CommentForm, Comment, Variants, Color, Size
 
 
 def product_detail(request, slug):
-
     product = get_object_or_404(Product, slug=slug)
 
     images = Images.objects.filter(product_id=product.id)
@@ -16,11 +15,22 @@ def product_detail(request, slug):
         status='True'
     )
 
-    variants = Variants.objects.filter(
-        product_id=product.id
-    )
+    variants = Variants.objects.filter(product_id=product.id)
+
+    colors = Color.objects.filter(variants__product=product).distinct()
+    sizes = Size.objects.filter(variants__product=product).distinct()
 
     form = CommentForm()
+
+    variants_json = [
+        {
+            "id": v.id,
+            "color": v.color.id if v.color else None,
+            "size": v.size.id if v.size else None,
+            "price": str(v.price),
+        }
+        for v in variants
+    ]
 
     context = {
         "product": product,
@@ -28,13 +38,12 @@ def product_detail(request, slug):
         "comments": comments,
         "form": form,
         "variants": variants,
+        "colors": colors,
+        "sizes": sizes,
+        "variants_json": json.dumps(variants_json),
     }
 
-    return render(
-        request,
-        "product/product_detail.html",
-        context
-    )
+    return render(request, "product/product_detail.html", context)
 
 
 def addcomment(request, id):

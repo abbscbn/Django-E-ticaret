@@ -5,11 +5,9 @@
     </h1>
 
     <div class="mb-3">
-
         <span class="badge bg-success px-3 py-2">
-            Stok: {{ product.amount }}
+            Stok: {{ product.quantity }}
         </span>
-
     </div>
 
     <h2 class="fw-bold text-dark mb-4">
@@ -26,33 +24,57 @@
 
         {% csrf_token %}
 
-        <!-- VARIANT -->
         {% if product.variant != 'None' %}
 
-            <div class="mb-4">
+            <!-- COLOR SELECT -->
+            <div class="mb-3">
 
                 <label class="form-label fw-semibold">
-                    Varyant Seç
+                    Renk Seç
                 </label>
 
-                <select name="variantid"
+                <select name="color"
+                        id="colorSelect"
                         class="form-select"
                         required>
 
-                    {% for rs in variants %}
+                    <option value="">Renk seç</option>
 
-                        <option value="{{ rs.id }}">
-
-                            {{ rs.title }}
-                            - ₺{{ rs.price }}
-
+                    {% for color in colors %}
+                        <option value="{{ color.id }}">
+                            {{ color.name }}
                         </option>
+                    {% endfor %}
 
+                </select>
+            </div>
+
+            <!-- SIZE SELECT -->
+            <div class="mb-4">
+
+                <label class="form-label fw-semibold">
+                    Beden Seç
+                </label>
+
+                <select name="size"
+                        id="sizeSelect"
+                        class="form-select"
+                        required>
+
+                    <option value="">Beden seç</option>
+
+                    {% for size in sizes %}
+                        <option value="{{ size.id }}">
+                            {{ size.name }}
+                        </option>
                     {% endfor %}
 
                 </select>
 
             </div>
+
+            <!-- HIDDEN VARIANT -->
+            <input type="hidden" name="variantid" id="variantInput">
 
         {% endif %}
 

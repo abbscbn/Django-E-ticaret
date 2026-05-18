@@ -68,7 +68,7 @@ class CategoryAdmin(DraggableMPTTAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['title', 'status', 'category', 'image_tag','slug']
+    list_display = ['title', 'status','quantity', 'category', 'image_tag','slug']
     readonly_fields = ('image_tag',)
     list_filter = ['status', 'category']
     inlines = [ProductImageInline,ProductVariantsInline]

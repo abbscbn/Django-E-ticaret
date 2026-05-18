@@ -191,3 +191,27 @@ $(document).ready(function () {
     });
 
 });
+
+const variants = JSON.parse(document.getElementById("variant-data").textContent);
+
+const colorSelect = document.getElementById("colorSelect");
+const sizeSelect = document.getElementById("sizeSelect");
+const variantInput = document.getElementById("variantInput");
+
+function findVariant() {
+    const color = colorSelect?.value;
+    const size = sizeSelect?.value;
+
+    if (!color || !size) return;
+
+    const match = variants.find(v =>
+        v.color == color && v.size == size
+    );
+
+    if (match) {
+        variantInput.value = match.id;
+    }
+}
+
+colorSelect?.addEventListener("change", findVariant);
+sizeSelect?.addEventListener("change", findVariant);
