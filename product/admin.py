@@ -20,12 +20,14 @@ class ProductVariantsInline(admin.TabularInline):
 
     fields = (
         'title',
+        'product',
         'color',
         'size',
         'price',
         'quantity',
-        'image',
-        'image_tag'
+        'active',
+        'slug',
+        'image_tag',
     )
 
     extra = 1
@@ -75,6 +77,7 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
 
+
 class ImagesAdmin(admin.ModelAdmin):
     list_display = ['title', 'product', 'image']
 
@@ -99,7 +102,9 @@ class VariantsAdmin(admin.ModelAdmin):
         'size',
         'price',
         'quantity',
-        'image_tag'
+        'active',
+        'slug',
+        'image_tag',
     )
 
     readonly_fields = ('image_tag',)
@@ -107,12 +112,48 @@ class VariantsAdmin(admin.ModelAdmin):
     list_filter = (
         'product',
         'color',
-        'size'
+        'size',
+        'active',
     )
 
     search_fields = (
         'title',
-        'product__title'
+        'product__title',
+        'slug'
+    )
+
+    prepopulated_fields = {
+        "slug": ("title",)
+    }
+
+    fieldsets = (
+        ("Basic Info", {
+            "fields": (
+                "product",
+                "title",
+                "slug",
+                "active"
+            )
+        }),
+        ("Variant Options", {
+            "fields": (
+                "color",
+                "size"
+            )
+        }),
+        ("Pricing & Stock", {
+            "fields": (
+                "price",
+                "quantity",
+                "sku"
+            )
+        }),
+        ("Media", {
+            "fields": (
+                "image",
+                "image_tag"
+            )
+        }),
     )
 
 

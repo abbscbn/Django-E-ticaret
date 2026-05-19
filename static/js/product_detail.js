@@ -192,26 +192,63 @@ $(document).ready(function () {
 
 });
 
-const variants = JSON.parse(document.getElementById("variant-data").textContent);
+const variants = JSON.parse(
+    document.getElementById("variant-data").textContent
+);
 
-const colorSelect = document.getElementById("colorSelect");
-const sizeSelect = document.getElementById("sizeSelect");
-const variantInput = document.getElementById("variantInput");
+const sizeButtons = document.querySelectorAll(".size-btn");
 
-function findVariant() {
-    const color = colorSelect?.value;
-    const size = sizeSelect?.value;
+const colorContainer = document.getElementById("colorContainer");
 
-    if (!color || !size) return;
+let selectedSize = null;
 
-    const match = variants.find(v =>
-        v.color == color && v.size == size
+sizeButtons.forEach(btn => {
+
+    btn.addEventListener("click", function () {
+
+        selectedSize = this.dataset.size;
+
+        renderColors(selectedSize);
+    });
+
+});
+
+function renderColors(sizeId) {
+
+    colorContainer.innerHTML = "";
+
+    const filtered = variants.filter(v =>
+        String(v.size) === String(sizeId)
     );
 
-    if (match) {
-        variantInput.value = match.id;
-    }
+    const usedColors = [];
+
+    filtered.forEach(v => {
+
+        if (usedColors.includes(v.color)) {
+            return;
+        }
+
+        usedColors.push(v.color);
+
+        const a = document.createElement("a");
+
+        a.href = v.url;
+
+        a.className =
+            "border rounded-circle d-flex align-items-center justify-content-center";
+
+        a.style.width = "40px";
+        a.style.height = "40px";
+        a.style.backgroundColor = v.color_code;
+        a.style.border = "2px solid #ddd";
+
+        a.title = v.color_name;
+
+        colorContainer.appendChild(a);
+
+    });
+
 }
 
-colorSelect?.addEventListener("change", findVariant);
-sizeSelect?.addEventListener("change", findVariant);
+

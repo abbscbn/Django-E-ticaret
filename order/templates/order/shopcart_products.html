@@ -52,7 +52,7 @@
 
                                 <div class="d-flex align-items-center gap-3">
 
-                                    <img src="{{ rs.product.image.url }}"
+                                    <img src="{{ rs.variant.image.image.url | default:rs.product.image.url }}"
                                          width="80"
                                          height="80"
                                          class="rounded-3 border"

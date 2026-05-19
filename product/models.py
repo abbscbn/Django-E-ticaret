@@ -6,6 +6,7 @@ from django import forms
 from django.forms import ModelForm
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.utils.text import slugify
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 
@@ -158,58 +159,45 @@ class Size(models.Model):
         return self.name
 
 class Variants(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
     title = models.CharField(max_length=100, blank=True, null=True)
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    slug = models.SlugField(unique=True, blank=True)  # 🔥 önemli
 
-    color = models.ForeignKey(
-        Color,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True
-    )
+    image=models.ForeignKey(Images, blank=True, null=True, on_delete=models.SET_NULL)
 
-    size = models.ForeignKey(
-        Size,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True
-    )
+    sku=models.CharField(max_length=20, blank=True, null=True)
 
-    image = models.ForeignKey(
-        Images,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, blank=True, null=True)
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, blank=True, null=True)
 
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     quantity = models.IntegerField(default=1)
 
-    price = models.DecimalField(
-        max_digits=12,
-        decimal_places=2,
-        default=0
-    )
+    active = models.BooleanField(default=True)
 
-    def __str__(self):
-        return self.title
+    def save(self, *args, **kwargs):
 
-    def image_url(self):
+        if not self.slug:
 
-        if self.image and self.image.image:
-            return self.image.image.url
+            base = self.product.title
 
-        return ""
+            if self.color:
+                base += f"-{self.color.name}"
+
+            if self.size:
+                base += f"-{self.size.name}"
+
+            self.slug = slugify(base)
+
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("product_variant_detail", kwargs={"slug": self.slug})
 
     def image_tag(self):
-
         if self.image and self.image.image:
-            return mark_safe(
-                '<img src="{}" height="50"/>'.format(
-                    self.image.image.url
-                )
-            )
-
+            return mark_safe(f'<img src="{self.image.image.url}" height="50"/>')
         return ""
 
-    image_tag.short_description = 'Image'
+    image_tag.short_description = "Image"

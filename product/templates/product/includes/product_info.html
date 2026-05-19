@@ -1,22 +1,78 @@
 <div class="ps-lg-4">
 
+    <!-- TITLE -->
     <h1 class="fw-bold mb-3">
         {{ product.title }}
     </h1>
 
+    <!-- STOCK -->
     <div class="mb-3">
+
         <span class="badge bg-success px-3 py-2">
-            Stok: {{ product.quantity }}
+
+            Stok:
+            {{ active_variant.quantity|default:product.quantity }}
+
         </span>
+
     </div>
 
+    <!-- PRICE -->
     <h2 class="fw-bold text-dark mb-4">
-        ₺{{ product.price }}
+
+        ₺{{ active_variant.price|default:product.price }}
+
     </h2>
 
+    <!-- DESCRIPTION -->
     <div class="text-muted mb-4">
         {{ product.description }}
     </div>
+
+    {% if variants %}
+
+        <!-- SIZE -->
+        <div class="mb-4">
+
+            <label class="form-label fw-semibold">
+                Beden Seç
+            </label>
+
+            <div class="d-flex flex-wrap gap-2">
+
+                {% for size in sizes %}
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-dark size-btn"
+                        data-size="{{ size.id }}">
+
+                        {{ size.name }}
+
+                    </button>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- COLOR -->
+        <div class="mb-4">
+
+            <label class="form-label fw-semibold">
+                Renk Seç
+            </label>
+
+            <div
+                class="d-flex flex-wrap gap-2"
+                id="colorContainer">
+
+            </div>
+
+        </div>
+
+    {% endif %}
 
     <!-- ADD TO CART -->
     <form method="post"
@@ -24,61 +80,15 @@
 
         {% csrf_token %}
 
-        {% if product.variant != 'None' %}
+        {% if active_variant %}
 
-            <!-- COLOR SELECT -->
-            <div class="mb-3">
-
-                <label class="form-label fw-semibold">
-                    Renk Seç
-                </label>
-
-                <select name="color"
-                        id="colorSelect"
-                        class="form-select"
-                        required>
-
-                    <option value="">Renk seç</option>
-
-                    {% for color in colors %}
-                        <option value="{{ color.id }}">
-                            {{ color.name }}
-                        </option>
-                    {% endfor %}
-
-                </select>
-            </div>
-
-            <!-- SIZE SELECT -->
-            <div class="mb-4">
-
-                <label class="form-label fw-semibold">
-                    Beden Seç
-                </label>
-
-                <select name="size"
-                        id="sizeSelect"
-                        class="form-select"
-                        required>
-
-                    <option value="">Beden seç</option>
-
-                    {% for size in sizes %}
-                        <option value="{{ size.id }}">
-                            {{ size.name }}
-                        </option>
-                    {% endfor %}
-
-                </select>
-
-            </div>
-
-            <!-- HIDDEN VARIANT -->
-            <input type="hidden" name="variantid" id="variantInput">
+            <input
+                type="hidden"
+                name="variantid"
+                value="{{ active_variant.id }}">
 
         {% endif %}
 
-        <!-- QUANTITY -->
         <div class="mb-4">
 
             <label class="form-label fw-semibold">
