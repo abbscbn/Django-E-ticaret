@@ -74,7 +74,6 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
-
     def get_absolute_url(self):
         return reverse('product_detail', kwargs={'slug': self.slug})
 
@@ -94,57 +93,13 @@ class Images(models.Model):
         return self.title
 
 
-class Comment(models.Model):
-    STATUS = (
-        ('New', 'New'),
-        ('True', 'True'),
-        ('False', 'False'),
-    )
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    subject = models.CharField(max_length=50, blank=True)
-    comment = models.CharField(max_length=250, blank=True)
-    rate = models.IntegerField(default=1)
-    ip = models.CharField(max_length=20, blank=True)
-    status = models.CharField(max_length=10, choices=STATUS, default='New')
-    create_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.subject
-
-
-class CommentForm(ModelForm):
-    subject = forms.CharField(
-        min_length=3,
-        max_length=50,
-        required=True,
-        error_messages={
-            'min_length':'Başlık minumum 3 karakterli olabilir',
-            'required': 'Başlık alanı boş bırakılamaz.',
-            'max_length': 'Başlık en fazla 50 karakter olabilir.',
-        }
-    )
-
-    comment = forms.CharField(
-        max_length=250,
-        required=True,
-        error_messages={
-            'required': 'Yorum alanı boş bırakılamaz.',
-            'max_length': 'Yorum en fazla 250 karakter olabilir.',
-        }
-    )
-
-    class Meta:
-        model = Comment
-        fields = ['subject', 'comment', 'rate']
-
-
 class Color(models.Model):
     name = models.CharField(max_length=20)
-    code = models.CharField(max_length=10, blank=True,null=True)
+    code = models.CharField(max_length=10, blank=True, null=True)
+
     def __str__(self):
         return self.name
+
     def color_tag(self):
         if self.code is not None:
             return mark_safe('<p style="background-color:{}">Color </p>'.format(self.code))
@@ -154,9 +109,11 @@ class Color(models.Model):
 
 class Size(models.Model):
     name = models.CharField(max_length=20)
-    code = models.CharField(max_length=10, blank=True,null=True)
+    code = models.CharField(max_length=10, blank=True, null=True)
+
     def __str__(self):
         return self.name
+
 
 class Variants(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
@@ -164,9 +121,9 @@ class Variants(models.Model):
 
     slug = models.SlugField(unique=True, blank=True)  # 🔥 önemli
 
-    image=models.ForeignKey(Images, blank=True, null=True, on_delete=models.SET_NULL)
+    image = models.ForeignKey(Images, blank=True, null=True, on_delete=models.SET_NULL)
 
-    sku=models.CharField(max_length=20, blank=True, null=True)
+    sku = models.CharField(max_length=20, blank=True, null=True)
 
     color = models.ForeignKey(Color, on_delete=models.CASCADE, blank=True, null=True)
     size = models.ForeignKey(Size, on_delete=models.CASCADE, blank=True, null=True)
@@ -175,6 +132,9 @@ class Variants(models.Model):
     quantity = models.IntegerField(default=1)
 
     active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
 
     def save(self, *args, **kwargs):
 
@@ -201,3 +161,56 @@ class Variants(models.Model):
         return ""
 
     image_tag.short_description = "Image"
+
+
+class Comment(models.Model):
+    STATUS = (
+        ('New', 'New'),
+        ('True', 'True'),
+        ('False', 'False'),
+    )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variant = models.ForeignKey(
+        Variants,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='comments'
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=50, blank=True)
+    comment = models.CharField(max_length=250, blank=True)
+    rate = models.IntegerField(default=1)
+    ip = models.CharField(max_length=20, blank=True)
+    status = models.CharField(max_length=10, choices=STATUS, default='New')
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.subject
+
+
+class CommentForm(ModelForm):
+    subject = forms.CharField(
+        min_length=3,
+        max_length=50,
+        required=True,
+        error_messages={
+            'min_length': 'Başlık minumum 3 karakterli olabilir',
+            'required': 'Başlık alanı boş bırakılamaz.',
+            'max_length': 'Başlık en fazla 50 karakter olabilir.',
+        }
+    )
+
+    comment = forms.CharField(
+        max_length=250,
+        required=True,
+        error_messages={
+            'required': 'Yorum alanı boş bırakılamaz.',
+            'max_length': 'Yorum en fazla 250 karakter olabilir.',
+        }
+    )
+
+    class Meta:
+        model = Comment
+        fields = ['subject', 'comment', 'rate']

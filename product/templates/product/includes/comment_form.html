@@ -27,7 +27,7 @@
                            name="subject"
                            class="form-control"
 
-                          >
+                    >
                 </div>
 
                 <!-- COMMENT -->
@@ -37,7 +37,7 @@
                               rows="5"
                               class="form-control"
                               required
-                              ></textarea>
+                    ></textarea>
                 </div>
 
                 <!-- RATE -->
@@ -56,6 +56,16 @@
                     </div>
 
                     <input type="hidden" name="rate" id="rateInput" value="0">
+
+                    <!-- ACTIVE VARIANT -->
+                    {% if active_variant %}
+
+                        <input
+                                type="hidden"
+                                name="variantid"
+                                value="{{ active_variant.id }}">
+
+                    {% endif %}
 
                 </div>
 

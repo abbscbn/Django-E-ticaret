@@ -7,9 +7,14 @@ from product.models import Product, Images, CommentForm, Comment, Variants, Colo
 
 
 def addcomment(request, id):
-    product = get_object_or_404(Product, id=id)
+
+    product = get_object_or_404(
+        Product,
+        id=id
+    )
 
     if not request.user.is_authenticated:
+
         return JsonResponse({
             "status": "error",
             "message": "Yorum yapmak için giriş yapmalısınız"
@@ -20,12 +25,34 @@ def addcomment(request, id):
         form = CommentForm(request.POST)
 
         if form.is_valid():
+
+            variant = None
+
+            variant_id = request.POST.get(
+                "variantid"
+            )
+
+            if variant_id:
+
+                variant = Variants.objects.filter(
+                    id=variant_id,
+                    active=True
+                ).first()
+
             Comment.objects.create(
+
                 subject=form.cleaned_data['subject'],
+
                 comment=form.cleaned_data['comment'],
+
                 rate=form.cleaned_data['rate'],
+
                 ip=request.META.get('REMOTE_ADDR'),
+
                 product=product,
+
+                variant=variant,
+
                 user=request.user
             )
 
@@ -33,8 +60,6 @@ def addcomment(request, id):
                 "status": "success",
                 "message": "Yorum Gönderildi"
             })
-
-        temp = form.errors
 
         return JsonResponse({
             "status": "error",
@@ -57,6 +82,11 @@ def product_variant_detail(request, slug):
 
     product = active_variant.product
 
+    comments = Comment.objects.filter(
+        variant=active_variant,
+        status='True'
+    )
+
     variants = product.variants.filter(
         active=True
     ).select_related(
@@ -65,32 +95,30 @@ def product_variant_detail(request, slug):
         "image"
     )
 
-    # unique sizes
     sizes = (
         Size.objects.filter(
             variants__product=product,
             variants__active=True
-        )
-        .distinct()
+        ).distinct()
     )
 
-    # unique colors
     colors = (
         Color.objects.filter(
             variants__product=product,
             variants__active=True
-        )
-        .distinct()
+        ).distinct()
     )
-
 
     variants_json = []
 
     for v in variants:
 
         variants_json.append({
+
             "id": v.id,
+
             "slug": v.slug,
+
             "url": v.get_absolute_url(),
 
             "size": (
@@ -125,12 +153,20 @@ def product_variant_detail(request, slug):
         })
 
     context = {
+
         "product": product,
+
         "active_variant": active_variant,
+
         "variants": variants,
+
         "sizes": sizes,
+
         "colors": colors,
+
         "variants_json": variants_json,
+
+        "comments": comments,
     }
 
     return render(
@@ -142,9 +178,10 @@ def product_variant_detail(request, slug):
 
 def product_detail(request, slug):
 
-    product = get_object_or_404(Product, slug=slug)
-
-
+    product = get_object_or_404(
+        Product,
+        slug=slug
+    )
 
     variants = product.variants.filter(
         active=True
@@ -156,30 +193,61 @@ def product_detail(request, slug):
 
     active_variant = variants.first()
 
-    # unique sizes
+    # =========================
+    # COMMENTS
+    # =========================
+
+    if active_variant:
+
+        comments = Comment.objects.filter(
+            variant=active_variant,
+            status='True'
+        )
+
+    else:
+
+        comments = Comment.objects.filter(
+            product=product,
+            variant__isnull=True,
+            status='True'
+        )
+
+    # =========================
+    # UNIQUE SIZES
+    # =========================
+
     sizes = (
         Size.objects.filter(
             variants__product=product,
             variants__active=True
-        )
-        .distinct()
+        ).distinct()
     )
 
-    # unique colors
+    # =========================
+    # UNIQUE COLORS
+    # =========================
+
     colors = (
         Color.objects.filter(
             variants__product=product,
             variants__active=True
-        )
-        .distinct()
+        ).distinct()
     )
+
+    # =========================
+    # VARIANTS JSON
+    # =========================
 
     variants_json = []
 
     for v in variants:
+
         variants_json.append({
+
             "id": v.id,
+
             "slug": v.slug,
+
             "url": v.get_absolute_url(),
 
             "size": (
@@ -214,12 +282,20 @@ def product_detail(request, slug):
         })
 
     context = {
+
         "product": product,
+
         "active_variant": active_variant,
+
         "variants": variants,
+
         "sizes": sizes,
+
         "colors": colors,
+
         "variants_json": variants_json,
+
+        "comments": comments,
     }
 
     return render(
