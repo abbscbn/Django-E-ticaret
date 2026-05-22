@@ -55,6 +55,9 @@ class Product(models.Model):
         ('Size', 'Size'),
         ('Color', 'Color'),
         ('Size-Color', 'Size-Color'),
+        ('L','L'),
+        ('KG', 'KG'),
+        ('GB','GB'),
 
     )
     category = models.ForeignKey(Category, on_delete=models.CASCADE)  # many to one relation with Category

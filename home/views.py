@@ -6,18 +6,32 @@ from django.shortcuts import render, get_object_or_404
 
 from home.forms import SearchForm
 from home.models import Setting, ContactForm, ContactMessage
-from product.models import Product, Category
+from product.models import Product, Category, Variants
 
 
 # Create your views here.
 def index(request):
     setting = Setting.objects.get(pk=1)
-    products = Product.objects.all()
+
+    variants = (
+        Variants.objects.filter(
+            active=True
+        )
+        .select_related(
+            'product',
+            'color',
+            'size',
+            'image'
+        )
+    )
     categorys = Category.objects.all()
-    context = {'setting': setting
+
+    context = {
+        'setting': setting
         , 'page': 'home'
-        , 'products': products
+        , 'variants': variants
         , 'categorys': categorys}
+
     return render(request, 'home/index.html', context)
 
 
@@ -50,13 +64,14 @@ def contactus(request):
 
 
 def category_detail(request, slug):
+
     category = get_object_or_404(Category, slug=slug)
 
-    # Alt kategoriler
     children = category.get_children()
 
-    # Eğer child varsa
+    # Eğer alt kategori varsa
     if children.exists():
+
         context = {
             'category': category,
             'children': children,
@@ -69,13 +84,25 @@ def category_detail(request, slug):
             context
         )
 
-    # Leaf category ise ürün getir
-    products = Product.objects.filter(category=category)
+    # 🔥 ARTIK PRODUCT DEĞİL VARIANT
+    variants = (
+        Variants.objects
+        .filter(
+            product__category=category,
+            active=True
+        )
+        .select_related(
+            "product",
+            "image",
+            "color",
+            "size"
+        )
+    )
 
     context = {
         'category': category,
-        'products': products,
-        'page': 'products'
+        'variants': variants,
+        'page': 'variants'
     }
 
     return render(
@@ -85,15 +112,40 @@ def category_detail(request, slug):
     )
 
 
-
 def search(request):
-    if request.method == 'POST': # check post
+
+    if request.method == 'POST':
+
         form = SearchForm(request.POST)
+
         if form.is_valid():
-            query = form.cleaned_data['query'] # get form input data
-            products = Product.objects.filter(title__icontains=query)
-            context = {'products': products }
-            return render(request, 'home/search_products.html', context)
+
+            query = form.cleaned_data['query']
+
+            variants = (
+                Variants.objects
+                .filter(
+                    title__icontains=query,
+                    active=True
+                )
+                .select_related(
+                    "product",
+                    "image",
+                    "color",
+                    "size"
+                )
+            )
+
+            context = {
+                'variants': variants,
+                'query': query
+            }
+
+            return render(
+                request,
+                'home/search_products.html',
+                context
+            )
 
     return HttpResponseRedirect('/')
 
@@ -104,16 +156,18 @@ def search_auto(request):
 
         q = request.GET.get('term', '')
 
-        products = Product.objects.filter(
-            title__icontains=q
-        )[:10]
+        variants = (
+            Variants.objects
+            .filter(
+                title__icontains=q,
+                active=True
+            )[:10]
+        )
 
         results = []
 
-        for rs in products:
-            results.append(
-                f"{rs.title}"
-            )
+        for v in variants:
+            results.append(v.title)
 
         return JsonResponse(results, safe=False)
 
