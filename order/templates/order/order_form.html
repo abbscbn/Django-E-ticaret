@@ -140,7 +140,7 @@
                             <div>
 
                                 <div class="fw-semibold">
-                                    {{ rs.product.title }}
+                                    {{ rs.variant.title }}
                                 </div>
 
                                 <small class="text-muted">
@@ -153,8 +153,6 @@
 
                                 {% if rs.variant %}
                                     ₺{{ rs.varamount }}
-                                {% else %}
-                                    ₺{{ rs.amount }}
                                 {% endif %}
 
                             </strong>

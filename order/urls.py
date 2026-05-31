@@ -4,7 +4,7 @@ from order import views
 
 urlpatterns = [
 
-    path('addtoshopcart/<int:id>', views.addtoshopcart, name='addtoshopcart'),
+    path('addtoshopcart/', views.addtoshopcart, name='addtoshopcart'),
 
     path(
         'shopcart/',

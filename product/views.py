@@ -2,16 +2,12 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 import json
-from product.models import Product, Images, CommentForm, Comment, Variants, Color, Size
+from product.models import Product, Images, CommentForm, Comment, Variants
 
 
 
-def addcomment(request, id):
+def addcomment(request):
 
-    product = get_object_or_404(
-        Product,
-        id=id
-    )
 
     if not request.user.is_authenticated:
 
@@ -48,8 +44,6 @@ def addcomment(request, id):
                 rate=form.cleaned_data['rate'],
 
                 ip=request.META.get('REMOTE_ADDR'),
-
-                product=product,
 
                 variant=variant,
 
@@ -95,19 +89,7 @@ def product_variant_detail(request, slug):
         "image"
     )
 
-    sizes = (
-        Size.objects.filter(
-            variants__product=product,
-            variants__active=True
-        ).distinct()
-    )
 
-    colors = (
-        Color.objects.filter(
-            variants__product=product,
-            variants__active=True
-        ).distinct()
-    )
 
     variants_json = []
 
@@ -160,10 +142,6 @@ def product_variant_detail(request, slug):
 
         "variants": variants,
 
-        "sizes": sizes,
-
-        "colors": colors,
-
         "variants_json": variants_json,
 
         "comments": comments,
@@ -176,130 +154,3 @@ def product_variant_detail(request, slug):
     )
 
 
-def product_detail(request, slug):
-
-    product = get_object_or_404(
-        Product,
-        slug=slug
-    )
-
-    variants = product.variants.filter(
-        active=True
-    ).select_related(
-        "color",
-        "size",
-        "image"
-    )
-
-    active_variant = variants.first()
-
-    # =========================
-    # COMMENTS
-    # =========================
-
-    if active_variant:
-
-        comments = Comment.objects.filter(
-            variant=active_variant,
-            status='True'
-        )
-
-    else:
-
-        comments = Comment.objects.filter(
-            product=product,
-            variant__isnull=True,
-            status='True'
-        )
-
-    # =========================
-    # UNIQUE SIZES
-    # =========================
-
-    sizes = (
-        Size.objects.filter(
-            variants__product=product,
-            variants__active=True
-        ).distinct()
-    )
-
-    # =========================
-    # UNIQUE COLORS
-    # =========================
-
-    colors = (
-        Color.objects.filter(
-            variants__product=product,
-            variants__active=True
-        ).distinct()
-    )
-
-    # =========================
-    # VARIANTS JSON
-    # =========================
-
-    variants_json = []
-
-    for v in variants:
-
-        variants_json.append({
-
-            "id": v.id,
-
-            "slug": v.slug,
-
-            "url": v.get_absolute_url(),
-
-            "size": (
-                v.size.id if v.size else None
-            ),
-
-            "color": (
-                v.color.id if v.color else None
-            ),
-
-            "size_name": (
-                v.size.name if v.size else ""
-            ),
-
-            "color_name": (
-                v.color.name if v.color else ""
-            ),
-
-            "color_code": (
-                v.color.code if v.color else ""
-            ),
-
-            "price": str(v.price),
-
-            "quantity": v.quantity,
-
-            "image": (
-                v.image.image.url
-                if v.image and v.image.image
-                else product.image.url
-            )
-        })
-
-    context = {
-
-        "product": product,
-
-        "active_variant": active_variant,
-
-        "variants": variants,
-
-        "sizes": sizes,
-
-        "colors": colors,
-
-        "variants_json": variants_json,
-
-        "comments": comments,
-    }
-
-    return render(
-        request,
-        "product/product_detail.html",
-        context
-    )

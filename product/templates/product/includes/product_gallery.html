@@ -8,7 +8,7 @@
             <!-- MAIN IMAGE THUMB -->
             <div class="gallery-thumb-wrapper active-thumb">
 
-                <img src="{{ active_variant.image.image.url | default:product.image.url }}"
+                <img src="{{ active_variant.image.image.url }}"
                      class="gallery-thumb img-fluid"
                      onclick="changeImage(this, 0)"
                      alt="{{ active_variant.title }}">
@@ -52,9 +52,9 @@
             </div>
 
             <img id="mainImage"
-                 src="{{ active_variant.image.image.url | default:product.image.url }}"
+                 src="{{ active_variant.image.image.url }}"
                  class="img-fluid product-main-image"
-                 alt="{{ product.title }}"
+                 alt="{{ active_variant.title }}"
                  data-bs-toggle="modal"
                  data-bs-target="#galleryModal">
 
@@ -101,7 +101,7 @@
                 <div class="zoom-container">
 
                     <img id="modalImage"
-                         src="{{ active_variant.image.image.url | default:product.image.url }}"
+                         src="{{ active_variant.image.image.url }}"
                          class="modal-gallery-image">
 
                 </div>

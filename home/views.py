@@ -13,6 +13,11 @@ from product.models import Product, Category, Variants
 def index(request):
     setting = Setting.objects.get(pk=1)
 
+    products=Product.objects.filter(
+        status=True
+    )
+
+
     variants = (
         Variants.objects.filter(
             active=True
@@ -29,6 +34,7 @@ def index(request):
     context = {
         'setting': setting
         , 'page': 'home'
+        , 'products': products
         , 'variants': variants
         , 'categorys': categorys}
 

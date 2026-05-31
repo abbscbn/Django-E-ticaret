@@ -68,6 +68,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     quantity = models.IntegerField(default=0)
     variant = models.CharField(max_length=10, choices=VARIANTS, default='None')
+    defaultVariantSlug=models.SlugField(blank=True, null=True)
     detail = RichTextUploadingField()
     slug = models.SlugField(null=False, unique=True)
     status = models.CharField(max_length=10, choices=STATUS)
@@ -78,7 +79,7 @@ class Product(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('product_detail', kwargs={'slug': self.slug})
+        return reverse("product_variant_detail", kwargs={"slug": self.defaultVariantSlug})
 
     def image_tag(self):
         if self.image.url is not None:
@@ -95,31 +96,32 @@ class Images(models.Model):
     def __str__(self):
         return self.title
 
+class Attribute(models.Model):
+    name = models.CharField(max_length=50)
 
-class Color(models.Model):
-    name = models.CharField(max_length=20)
-    code = models.CharField(max_length=10, blank=True, null=True)
+    TYPE_CHOICES = (
+        ("text", "Text"),
+        ("color", "Color"),
+        ("number", "Number"),
+    )
 
-    def __str__(self):
-        return self.name
-
-    def color_tag(self):
-        if self.code is not None:
-            return mark_safe('<p style="background-color:{}">Color </p>'.format(self.code))
-        else:
-            return ""
-
-
-class Size(models.Model):
-    name = models.CharField(max_length=20)
-    code = models.CharField(max_length=10, blank=True, null=True)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, default="text")
 
     def __str__(self):
         return self.name
 
+class AttributeValue(models.Model):
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE)
+    value = models.CharField(max_length=50)
+    # 🔥 UI metadata (opsiyonel)
+    color_code = models.CharField(max_length=10, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.attribute.name}: {self.value}"
 
 class Variants(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
+
     title = models.CharField(max_length=100, blank=True, null=True)
 
     slug = models.SlugField(unique=True, blank=True)  # 🔥 önemli
@@ -128,10 +130,13 @@ class Variants(models.Model):
 
     sku = models.CharField(max_length=20, blank=True, null=True)
 
-    color = models.ForeignKey(Color, on_delete=models.CASCADE, blank=True, null=True)
-    size = models.ForeignKey(Size, on_delete=models.CASCADE, blank=True, null=True)
+    attributes = models.ManyToManyField(
+        AttributeValue,
+        blank=True
+    )
 
     price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
     quantity = models.IntegerField(default=1)
 
     active = models.BooleanField(default=True)
@@ -142,21 +147,15 @@ class Variants(models.Model):
     def save(self, *args, **kwargs):
 
         if not self.slug:
-
-            base = self.product.title
-
-            if self.color:
-                base += f"-{self.color.name}"
-
-            if self.size:
-                base += f"-{self.size.name}"
-
-            self.slug = slugify(base)
+            self.slug = slugify(self.title)
 
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("product_variant_detail", kwargs={"slug": self.slug})
+        return reverse(
+            "product_variant_detail",
+            kwargs={"slug": self.slug}
+        )
 
     def image_tag(self):
         if self.image and self.image.image:
@@ -164,7 +163,6 @@ class Variants(models.Model):
         return ""
 
     image_tag.short_description = "Image"
-
 
 class Comment(models.Model):
     STATUS = (
@@ -191,7 +189,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.subject
-
 
 class CommentForm(ModelForm):
     subject = forms.CharField(

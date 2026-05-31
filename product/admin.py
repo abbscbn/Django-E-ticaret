@@ -1,9 +1,8 @@
 from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 
-
-
-from product.models import Category, Product, Images, Comment, Color, Size, Variants
+from product.models import Category, Product, Images, Comment, Variants,\
+    AttributeValue,Attribute
 
 
 # Register your models here.
@@ -21,8 +20,6 @@ class ProductVariantsInline(admin.TabularInline):
     fields = (
         'title',
         'product',
-        'color',
-        'size',
         'price',
         'quantity',
         'active',
@@ -87,19 +84,17 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['status']
     readonly_fields = ('subject', 'comment', 'ip', 'user', 'product', 'rate', 'id')
 
-class ColorAdmin(admin.ModelAdmin):
-    list_display = ['name', 'code', 'color_tag']
+class AttributeAdmin(admin.ModelAdmin):
+    list_display = ['name']
 
-class SizeAdmin(admin.ModelAdmin):
-    list_display = ['name', 'code']
+class AttributeValueAdmin(admin.ModelAdmin):
+    list_display = ['attribute','value']
 
 class VariantsAdmin(admin.ModelAdmin):
 
     list_display = (
         'title',
         'product',
-        'color',
-        'size',
         'price',
         'quantity',
         'active',
@@ -111,8 +106,6 @@ class VariantsAdmin(admin.ModelAdmin):
 
     list_filter = (
         'product',
-        'color',
-        'size',
         'active',
     )
 
@@ -137,15 +130,15 @@ class VariantsAdmin(admin.ModelAdmin):
         }),
         ("Variant Options", {
             "fields": (
-                "color",
-                "size"
+
+                "attributes",
             )
         }),
         ("Pricing & Stock", {
             "fields": (
                 "price",
                 "quantity",
-                "sku"
+                "sku",
             )
         }),
         ("Media", {
@@ -162,6 +155,6 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Images, ImagesAdmin)
 admin.site.register(Comment, CommentAdmin)
-admin.site.register(Color, ColorAdmin)
-admin.site.register(Size, SizeAdmin)
+admin.site.register(Attribute,AttributeAdmin )
+admin.site.register(AttributeValue, AttributeValueAdmin)
 admin.site.register(Variants,VariantsAdmin)

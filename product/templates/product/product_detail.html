@@ -50,7 +50,7 @@
             {% endfor %}
         ];
 
-        const commentUrl = "{% url 'addcomment' product.id %}";
+        const commentUrl = "{% url 'addcomment' %}";
     </script>
 
     {{ variants_json|json_script:"variant-data" }}

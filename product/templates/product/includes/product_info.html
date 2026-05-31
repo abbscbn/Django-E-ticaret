@@ -2,7 +2,7 @@
 
     <!-- TITLE -->
     <h1 class="fw-bold mb-3">
-        {{ product.title }}
+        {{ active_variant.title }}
     </h1>
 
     <!-- STOCK -->
@@ -11,7 +11,7 @@
         <span class="badge bg-success px-3 py-2">
 
             Stok:
-            {{ active_variant.quantity|default:product.quantity }}
+            {{ active_variant.quantity }}
 
         </span>
 
@@ -20,13 +20,13 @@
     <!-- PRICE -->
     <h2 class="fw-bold text-dark mb-4">
 
-        ₺{{ active_variant.price|default:product.price }}
+        ₺{{ active_variant.price }}
 
     </h2>
 
     <!-- DESCRIPTION -->
     <div class="text-muted mb-4">
-        {{ product.description }}
+        {{ active_variant.description }}
     </div>
 
     {% if variants %}
@@ -76,7 +76,7 @@
 
     <!-- ADD TO CART -->
     <form method="post"
-          action="{% url 'addtoshopcart' product.id %}">
+          action="{% url 'addtoshopcart' %}">
 
         {% csrf_token %}
 
