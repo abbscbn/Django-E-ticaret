@@ -1,139 +1,98 @@
 let currentScale = 1;
-
-
 let currentIndex = 0;
 
+// ================= IMAGE =================
 function changeImage(element, index) {
-
     document.getElementById("mainImage").src = element.src;
-
     document.getElementById("modalImage").src = element.src;
 
     currentIndex = index;
 
-    document.querySelectorAll(".gallery-thumb-wrapper").forEach(item => {
-        item.classList.remove("active-thumb");
-    });
+    document.querySelectorAll(".gallery-thumb-wrapper")
+        .forEach(item => item.classList.remove("active-thumb"));
 
     element.parentElement.classList.add("active-thumb");
-
 }
 
 function nextImage() {
-
-    currentIndex++;
-
-    if (currentIndex >= imageList.length) {
-        currentIndex = 0;
-    }
-
+    currentIndex = (currentIndex + 1) % imageList.length;
     updateModalImage();
-
 }
 
 function prevImage() {
-
-    currentIndex--;
-
-    if (currentIndex < 0) {
-        currentIndex = imageList.length - 1;
-    }
-
+    currentIndex = (currentIndex - 1 + imageList.length) % imageList.length;
     updateModalImage();
-
 }
 
 function updateModalImage() {
-
     document.getElementById("modalImage").src = imageList[currentIndex];
-
     resetZoom();
-
 }
 
 function zoomIn() {
-
     currentScale += 0.2;
-
     applyZoom();
-
 }
 
 function zoomOut() {
-
     if (currentScale > 1) {
-
         currentScale -= 0.2;
-
         applyZoom();
-
     }
-
 }
 
 function resetZoom() {
-
     currentScale = 1;
-
     applyZoom();
-
 }
 
 function applyZoom() {
-
     document.getElementById("modalImage").style.transform =
         `scale(${currentScale})`;
-
 }
 
+// ================= COMMENTS =================
 $(document).ready(function () {
 
-    // CSRF
+    const csrftoken = getCookie('csrftoken');
+
     function getCookie(name) {
         let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+        if (document.cookie) {
+            document.cookie.split(';').forEach(c => {
+                c = c.trim();
+                if (c.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(c.split('=')[1]);
                 }
-            }
+            });
         }
         return cookieValue;
     }
 
-    const csrftoken = getCookie('csrftoken');
-
-    // ⭐ STAR RATING
     function resetStars() {
         $(".rating-star")
             .removeClass("bi-star-fill")
             .addClass("bi-star");
 
-        $("#rateInput").val(5); // default 5
+        $("#rateInput").val(5);
     }
 
-    $(".rating-star").on("click", function () {
-
+    $(".rating-star").click(function () {
         let value = $(this).data("value");
 
         $("#rateInput").val(value);
 
         $(".rating-star").each(function () {
-
-            if ($(this).data("value") <= value) {
-                $(this).removeClass("bi-star").addClass("bi-star-fill");
-            } else {
-                $(this).removeClass("bi-star-fill").addClass("bi-star");
-            }
-
+            $(this).toggleClass(
+                "bi-star-fill",
+                $(this).data("value") <= value
+            ).toggleClass(
+                "bi-star",
+                $(this).data("value") > value
+            );
         });
-
     });
 
-    // FORM SUBMIT
     $("#commentForm").submit(function (e) {
         e.preventDefault();
 
@@ -141,9 +100,7 @@ $(document).ready(function () {
             type: "POST",
             url: commentUrl,
             data: $(this).serialize(),
-            headers: {
-                "X-CSRFToken": csrftoken
-            },
+            headers: { "X-CSRFToken": csrftoken },
 
             success: function (response) {
 
@@ -155,10 +112,7 @@ $(document).ready(function () {
                         </div>
                     `);
 
-                    // 🔥 FORM RESET
                     $("#commentForm")[0].reset();
-
-                    // ⭐ STAR RESET
                     resetStars();
 
                 } else {
@@ -166,7 +120,7 @@ $(document).ready(function () {
                     let html = `<div class="alert alert-danger">`;
 
                     if (response.errors) {
-                        $.each(response.errors, function (key, value) {
+                        $.each(response.errors, function (_, value) {
                             html += `<div>${value[0]}</div>`;
                         });
                     } else {
@@ -174,7 +128,6 @@ $(document).ready(function () {
                     }
 
                     html += `</div>`;
-
                     $("#comment-message").html(html);
                 }
             },
@@ -187,68 +140,48 @@ $(document).ready(function () {
                 `);
             }
         });
-
     });
-
 });
 
-const variants = JSON.parse(
-    document.getElementById("variant-data").textContent
-);
+// ================= VARIANTS =================
+const variants =
+    JSON.parse(document.getElementById("variant-data").textContent);
 
-const sizeButtons = document.querySelectorAll(".size-btn");
+let selectedAttributes =
+    JSON.parse(document.getElementById("active-attributes").textContent || "[]");
 
-const colorContainer = document.getElementById("colorContainer");
-
-let selectedSize = null;
-
-sizeButtons.forEach(btn => {
+// ================= ATTRIBUTE CLICK =================
+document.querySelectorAll(".attribute-btn").forEach(btn => {
 
     btn.addEventListener("click", function () {
 
-        selectedSize = this.dataset.size;
+        const valueId = parseInt(this.dataset.value);
+        const attributeName = this.dataset.attribute;
 
-        renderColors(selectedSize);
-    });
+        // 1. aynı attribute group içindeki eski value’yu sil
+        const groupValues = document.querySelectorAll(
+            `[data-attribute="${attributeName}"]`
+        );
 
-});
+        groupValues.forEach(el => {
+            const id = parseInt(el.dataset.value);
+            selectedAttributes = selectedAttributes.filter(v => v !== id);
+            el.classList.remove("active-attribute");
+        });
 
-function renderColors(sizeId) {
+        // 2. yeni value ekle
+        selectedAttributes.push(valueId);
+        this.classList.add("active-attribute");
 
-    colorContainer.innerHTML = "";
+        // 3. variant match (subset logic)
+        const matched = variants.find(v =>
+            selectedAttributes.every(id =>
+                v.attributes.includes(id)
+            )
+        );
 
-    const filtered = variants.filter(v =>
-        String(v.size) === String(sizeId)
-    );
-
-    const usedColors = [];
-
-    filtered.forEach(v => {
-
-        if (usedColors.includes(v.color)) {
-            return;
+        if (matched) {
+            window.location.href = matched.url;
         }
-
-        usedColors.push(v.color);
-
-        const a = document.createElement("a");
-
-        a.href = v.url;
-
-        a.className =
-            "border rounded-circle d-flex align-items-center justify-content-center";
-
-        a.style.width = "40px";
-        a.style.height = "40px";
-        a.style.backgroundColor = v.color_code;
-        a.style.border = "2px solid #ddd";
-
-        a.title = v.color_name;
-
-        colorContainer.appendChild(a);
-
     });
-
-}
-
-
+});

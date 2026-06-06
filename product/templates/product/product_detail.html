@@ -8,53 +8,58 @@
 
 {% block content %}
 
-    <div class="container my-5">
+<div class="container my-5">
 
-        <div class="row g-5">
+    <div class="row g-5">
 
-            <!-- GALLERY -->
-            <div class="col-lg-6">
-                {% include "product/includes/product_gallery.html" %}
-            </div>
-
-            <!-- PRODUCT INFO -->
-            <div class="col-lg-6">
-                {% include "product/includes/product_info.html" %}
-            </div>
-
+        <!-- GALLERY -->
+        <div class="col-lg-6">
+            {% include "product/includes/product_gallery.html" %}
         </div>
 
-        <!-- DETAIL + COMMENTS -->
-        <div class="row mt-5 g-4">
-
-            <!-- PRODUCT DETAIL + COMMENTS LIST -->
-            <div class="col-lg-8">
-                {% include "product/includes/product_tabs.html" %}
-            </div>
-
-            <!-- COMMENT FORM -->
-            <div class="col-lg-4">
-                {% include "product/includes/comment_form.html" %}
-            </div>
-
+        <!-- PRODUCT INFO -->
+        <div class="col-lg-6">
+            {% include "product/includes/product_info.html" %}
         </div>
 
     </div>
 
-    <!-- IMAGE LIST FOR JS -->
-    <script>
-        const imageList = [
-            "{{ product.image.url }}",
-            {% for rs in images %}
-                "{{ rs.image.url }}",
-            {% endfor %}
-        ];
+    <!-- DETAIL + COMMENTS -->
+    <div class="row mt-5 g-4">
 
-        const commentUrl = "{% url 'addcomment' %}";
-    </script>
+        <!-- PRODUCT DETAIL + COMMENTS LIST -->
+        <div class="col-lg-8">
+            {% include "product/includes/product_tabs.html" %}
+        </div>
 
-    {{ variants_json|json_script:"variant-data" }}
+        <!-- COMMENT FORM -->
+        <div class="col-lg-4">
+            {% include "product/includes/comment_form.html" %}
+        </div>
 
-    <script src="{% static 'js/product_detail.js' %}"></script>
+    </div>
+
+</div>
+
+<!-- IMAGE LIST FOR JS -->
+<script>
+    const imageList = [
+        "{{ product.image.url }}",
+        { %
+    for rs in images %}
+    "{{ rs.image.url }}",
+    { % endfor %
+    }
+    ]
+    ;
+
+    const commentUrl = "{% url 'addcomment' %}";
+</script>
+
+{{ variants_json|json_script:"variant-data" }}
+
+{{ active_attributes|json_script:"active-attributes" }}
+
+<script src="{% static 'js/product_detail.js' %}"></script>
 
 {% endblock %}

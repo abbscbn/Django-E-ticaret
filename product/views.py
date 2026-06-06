@@ -2,8 +2,7 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 import json
-from product.models import Product, Images, CommentForm, Comment, Variants
-
+from product.models import Product, Images, CommentForm, Comment, Variants, Category
 
 
 def addcomment(request):
@@ -74,24 +73,53 @@ def product_variant_detail(request, slug):
         active=True
     )
 
+    active_attributes = list(
+        active_variant.attributes.values_list(
+            "id",
+            flat=True
+        )
+    )
+
     product = active_variant.product
+
 
     comments = Comment.objects.filter(
         variant=active_variant,
         status='True'
     )
 
-    variants = product.variants.filter(
-        active=True
-    ).select_related(
-        "color",
-        "size",
-        "image"
+    variants = (
+        product.variants
+        .filter(active=True)
+        .prefetch_related(
+            "attributes",
+            "attributes__attribute",
+            "image"
+        )
     )
+
+    attribute_groups = {}
+
+    for variant in variants:
+
+        for attr_value in variant.attributes.all():
+
+            attr_name = attr_value.attribute.name
+
+            if attr_name not in attribute_groups:
+                attribute_groups[attr_name] = []
+
+            if attr_value not in attribute_groups[attr_name]:
+                attribute_groups[attr_name].append(attr_value)
+
+
+
 
 
 
     variants_json = []
+
+
 
     for v in variants:
 
@@ -103,26 +131,6 @@ def product_variant_detail(request, slug):
 
             "url": v.get_absolute_url(),
 
-            "size": (
-                v.size.id if v.size else None
-            ),
-
-            "color": (
-                v.color.id if v.color else None
-            ),
-
-            "size_name": (
-                v.size.name if v.size else ""
-            ),
-
-            "color_name": (
-                v.color.name if v.color else ""
-            ),
-
-            "color_code": (
-                v.color.code if v.color else ""
-            ),
-
             "price": str(v.price),
 
             "quantity": v.quantity,
@@ -131,7 +139,15 @@ def product_variant_detail(request, slug):
                 v.image.image.url
                 if v.image and v.image.image
                 else product.image.url
+            ),
+
+            "attributes": list(
+                v.attributes.values_list(
+                    "id",
+                    flat=True
+                )
             )
+
         })
 
     context = {
@@ -141,6 +157,10 @@ def product_variant_detail(request, slug):
         "active_variant": active_variant,
 
         "variants": variants,
+
+        "active_attributes": active_attributes,
+
+        "attribute_groups": attribute_groups,
 
         "variants_json": variants_json,
 

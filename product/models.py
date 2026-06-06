@@ -43,7 +43,6 @@ class Category(MPTTModel):
             k = k.parent
         return ' / '.join(full_path[::-1])
 
-
 class Product(models.Model):
     STATUS = (
         ('True', 'True'),
@@ -86,7 +85,6 @@ class Product(models.Model):
             return mark_safe('<img src="{}" height="50"/>'.format(self.image.url))
         else:
             return ""
-
 
 class Images(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

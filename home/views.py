@@ -1,22 +1,29 @@
 import json
+from asyncio import log
 
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 
+import product
 from home.forms import SearchForm
 from home.models import Setting, ContactForm, ContactMessage
 from product.models import Product, Category, Variants
+from users.models import UserProfile
 
 
 # Create your views here.
 def index(request):
+
+    if request.user.is_authenticated:
+        current_user = request.user  # Access User Session information
+        profile = UserProfile.objects.get(user_id=current_user.id)
+
     setting = Setting.objects.get(pk=1)
 
-    products=Product.objects.filter(
+    products = Product.objects.filter(
         status=True
     )
-
 
     variants = (
         Variants.objects.filter(
@@ -24,8 +31,6 @@ def index(request):
         )
         .select_related(
             'product',
-            'color',
-            'size',
             'image'
         )
     )
@@ -70,14 +75,12 @@ def contactus(request):
 
 
 def category_detail(request, slug):
-
     category = get_object_or_404(Category, slug=slug)
 
     children = category.get_children()
 
     # Eğer alt kategori varsa
     if children.exists():
-
         context = {
             'category': category,
             'children': children,
@@ -98,17 +101,21 @@ def category_detail(request, slug):
             active=True
         )
         .select_related(
-            "product",
-            "image",
-            "color",
-            "size"
+            "product"
+
+        )
+    )
+
+    products = (
+        Product.objects.filter(
+            category=category,
         )
     )
 
     context = {
         'category': category,
-        'variants': variants,
-        'page': 'variants'
+        'page': 'variants',
+        'products': products,
     }
 
     return render(
@@ -119,13 +126,11 @@ def category_detail(request, slug):
 
 
 def search(request):
-
     if request.method == 'POST':
 
         form = SearchForm(request.POST)
 
         if form.is_valid():
-
             query = form.cleaned_data['query']
 
             variants = (
@@ -137,8 +142,6 @@ def search(request):
                 .select_related(
                     "product",
                     "image",
-                    "color",
-                    "size"
                 )
             )
 
@@ -157,7 +160,6 @@ def search(request):
 
 
 def search_auto(request):
-
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
 
         q = request.GET.get('term', '')
