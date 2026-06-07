@@ -15,11 +15,30 @@ from users.models import UserProfile
 # Create your views here.
 def index(request):
 
-    if request.user.is_authenticated:
-        current_user = request.user  # Access User Session information
-        profile = UserProfile.objects.get(user_id=current_user.id)
 
     setting = Setting.objects.get(pk=1)
+
+    parent_categories = Category.objects.filter(
+        parent__isnull=True,
+        status='True'
+    )
+
+    category_products = []
+
+    for parent in parent_categories:
+
+        children = parent.get_descendants(include_self=True)
+
+        products = Product.objects.filter(
+            category__in=children,
+            status='True'
+        )
+
+        if products.exists():
+            category_products.append({
+                "category": parent,
+                "products": products
+            })
 
     products = Product.objects.filter(
         status=True
@@ -41,7 +60,9 @@ def index(request):
         , 'page': 'home'
         , 'products': products
         , 'variants': variants
-        , 'categorys': categorys}
+        , 'categorys': categorys
+        ,'category_products': category_products
+    }
 
     return render(request, 'home/index.html', context)
 
