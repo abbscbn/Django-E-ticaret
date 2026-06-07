@@ -20,8 +20,6 @@ class Language(models.Model):
         return self.name
 
 
-
-
 class Setting(models.Model):
     STATUS = (
         ('True', 'True'),

@@ -11,6 +11,7 @@ class ProductImageInline(admin.TabularInline):
     model = Images
     extra = 5
 
+
 class ProductVariantsInline(admin.TabularInline):
 
     model = Variants
@@ -78,7 +79,7 @@ class ImagesAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['subject', 'comment', 'status', 'create_at']
     list_filter = ['status']
-    readonly_fields = ('subject', 'comment', 'ip', 'user', 'product', 'rate', 'id')
+    readonly_fields = ('subject', 'comment', 'ip', 'user','variant', 'rate', 'id')
 
 class AttributeAdmin(admin.ModelAdmin):
     list_display = ['name']
@@ -110,6 +111,8 @@ class VariantsAdmin(admin.ModelAdmin):
         'product__title',
         'slug'
     )
+
+
 
     prepopulated_fields = {
         "slug": ("title",)

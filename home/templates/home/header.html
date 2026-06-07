@@ -65,12 +65,6 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        Ürünler
-                    </a>
-                </li>
-
-                <li class="nav-item">
                     <a class="nav-link" href="{% url 'aboutus' %}">
                         Hakkımızda
                     </a>
@@ -84,130 +78,130 @@
 
                 {% if user.is_authenticated %}
 
-                    <!-- CART -->
-                    <li class="nav-item me-2">
+                <!-- CART -->
+                <li class="nav-item me-2">
 
-                        <a href="{% url 'shopcart' %}"
-                           class="btn btn-light position-relative rounded-circle d-flex align-items-center justify-content-center"
-                           style="width:45px;height:45px;">
+                    <a href="{% url 'shopcart' %}"
+                       class="btn btn-light position-relative rounded-circle d-flex align-items-center justify-content-center"
+                       style="width:45px;height:45px;">
 
-                            <i class="bi bi-cart3 fs-5"></i>
+                        <i class="bi bi-cart3 fs-5"></i>
 
-                            {% if request.user.shopcart_set.all.count > 0 %}
+                        {% if request.user.shopcart_set.all.count > 0 %}
 
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 
                 {{ request.user.shopcart_set.all.count }}
 
             </span>
 
-                            {% endif %}
+                        {% endif %}
 
-                        </a>
+                    </a>
 
-                    </li>
+                </li>
 
-                    <!-- USER DROPDOWN -->
-                    <li class="nav-item dropdown">
+                <!-- USER DROPDOWN -->
+                <li class="nav-item dropdown">
 
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-                           href="#"
-                           role="button"
-                           data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown">
 
-                            {% if request.session.userimage %}
+                        {% if request.session.userimage %}
 
-                                <img src="{{ request.session.userimage }}"
-                                     class="rounded-circle border border-2 border-light"
-                                     width="38"
-                                     height="38"
-                                     style="object-fit: cover;">
+                        <img src="{{ request.session.userimage }}"
+                             class="rounded-circle border border-2 border-light"
+                             width="38"
+                             height="38"
+                             style="object-fit: cover;">
 
-                            {% else %}
+                        {% else %}
 
-                                <img src="/media/images/users/user.png"
-                                     class="rounded-circle border border-2 border-light"
-                                     width="38"
-                                     height="38"
-                                     style="object-fit: cover;">
+                        <img src="/media/images/users/user.png"
+                             class="rounded-circle border border-2 border-light"
+                             width="38"
+                             height="38"
+                             style="object-fit: cover;">
 
-                            {% endif %}
+                        {% endif %}
 
-                            <span class="fw-semibold">
+                        <span class="fw-semibold">
             {{ user.username }}
         </span>
 
-                        </a>
+                    </a>
 
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4">
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4">
 
-                            <li>
-                                <a class="dropdown-item py-2"
-                                   href="{% url 'user_index' %}">
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'user_index' %}">
 
-                                    <i class="bi bi-person me-2"></i>
-                                    Profilim
+                                <i class="bi bi-person me-2"></i>
+                                Profilim
 
-                                </a>
-                            </li>
+                            </a>
+                        </li>
 
-                            <li>
-                                <a class="dropdown-item py-2"
-                                   href="{% url 'user_update' %}">
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'user_update' %}">
 
-                                    <i class="bi bi-pencil-square me-2"></i>
-                                    Profil Güncelle
+                                <i class="bi bi-pencil-square me-2"></i>
+                                Profil Güncelle
 
-                                </a>
-                            </li>
+                            </a>
+                        </li>
 
-                            <li>
-                                <a class="dropdown-item py-2"
-                                   href="{% url 'user_password' %}">
+                        <li>
+                            <a class="dropdown-item py-2"
+                               href="{% url 'user_password' %}">
 
-                                    <i class="bi bi-key me-2"></i>
-                                    Şifre Değiştir
+                                <i class="bi bi-key me-2"></i>
+                                Şifre Değiştir
 
-                                </a>
-                            </li>
+                            </a>
+                        </li>
 
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
 
-                            <li>
-                                <a class="dropdown-item text-danger py-2"
-                                   href="{% url 'logout' %}">
+                        <li>
+                            <a class="dropdown-item text-danger py-2"
+                               href="{% url 'logout' %}">
 
-                                    <i class="bi bi-box-arrow-right me-2"></i>
-                                    Çıkış Yap
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Çıkış Yap
 
-                                </a>
-                            </li>
+                            </a>
+                        </li>
 
-                        </ul>
+                    </ul>
 
-                    </li>
+                </li>
 
                 {% else %}
 
-                    <li class="nav-item">
-                        <a class="btn btn-outline-light rounded-pill px-4"
-                           href="{% url 'login' %}">
+                <li class="nav-item">
+                    <a class="btn btn-outline-light rounded-pill px-4"
+                       href="{% url 'login' %}">
 
-                            Giriş Yap
+                        Giriş Yap
 
-                        </a>
-                    </li>
+                    </a>
+                </li>
 
-                    <li class="nav-item">
-                        <a class="btn btn-light rounded-pill px-4"
-                           href="{% url 'signup' %}">
+                <li class="nav-item">
+                    <a class="btn btn-light rounded-pill px-4"
+                       href="{% url 'signup' %}">
 
-                            Kayıt Ol
+                        Kayıt Ol
 
-                        </a>
-                    </li>
+                    </a>
+                </li>
 
                 {% endif %}
 

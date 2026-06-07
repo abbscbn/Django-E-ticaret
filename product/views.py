@@ -34,6 +34,7 @@ def addcomment(request):
                     active=True
                 ).first()
 
+
             Comment.objects.create(
 
                 subject=form.cleaned_data['subject'],
@@ -81,6 +82,7 @@ def product_variant_detail(request, slug):
     )
 
     product = active_variant.product
+
 
 
     comments = Comment.objects.filter(
@@ -165,6 +167,7 @@ def product_variant_detail(request, slug):
         "variants_json": variants_json,
 
         "comments": comments,
+
     }
 
     return render(

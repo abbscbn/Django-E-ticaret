@@ -93,6 +93,8 @@ $(document).ready(function () {
         });
     });
 
+
+
     $("#commentForm").submit(function (e) {
         e.preventDefault();
 

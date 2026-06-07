@@ -168,7 +168,7 @@ class Comment(models.Model):
         ('True', 'True'),
         ('False', 'False'),
     )
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
     variant = models.ForeignKey(
         Variants,
         on_delete=models.CASCADE,

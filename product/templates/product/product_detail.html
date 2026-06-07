@@ -43,15 +43,13 @@
 
 <!-- IMAGE LIST FOR JS -->
 <script>
+
     const imageList = [
-        "{{ product.image.url }}",
-        { %
-    for rs in images %}
+     "{{ product.image.url }}",
+    {% for rs in images %}
     "{{ rs.image.url }}",
-    { % endfor %
-    }
-    ]
-    ;
+    {% endfor %}
+    ];
 
     const commentUrl = "{% url 'addcomment' %}";
 </script>
